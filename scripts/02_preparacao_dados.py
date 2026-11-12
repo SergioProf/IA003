@@ -26,11 +26,16 @@ import numpy as np
 from pathlib import Path
 import warnings
 
+# Oculta avisos de bibliotecas para deixar o relatório do processamento mais
+# legível; erros continuam sendo tratados explicitamente nos blocos try/except.
 warnings.filterwarnings('ignore')
 
 # ============================================================================
 # SEÇÃO 1: CARREGAR O ARQUIVO ORIGINAL
 # ============================================================================
+# Os caminhos são calculados a partir da localização deste script, não da pasta
+# atual do terminal. Assim, o comando funciona mesmo quando executado de outro
+# diretório.
 print("=" * 80)
 print("PREPARAÇÃO DE DADOS — IPTU 2026 Porto Alegre")
 print("=" * 80)
@@ -41,6 +46,8 @@ DATA_FILE = BASE_DIR / "iptu_2026.csv"
 print(f"\n📂 Carregando dados de: {DATA_FILE}")
 
 try:
+    # O arquivo usa ponto-e-vírgula entre colunas e UTF-8 para preservar acentos.
+    # O DataFrame `df` será a tabela de trabalho modificada nas etapas seguintes.
     df = pd.read_csv(
         DATA_FILE,
         sep=';',
@@ -56,6 +63,8 @@ except Exception as e:
 # ============================================================================
 # SEÇÃO 2: DOCUMENTAR ESTADO INICIAL
 # ============================================================================
+# Guardamos a quantidade inicial de linhas para comparar com o resultado final
+# e informar quantos registros foram removidos durante a limpeza.
 print("\n" + "=" * 80)
 print("SEÇÃO 2: ESTADO DOS DADOS ANTES DA LIMPEZA")
 print("=" * 80)
@@ -69,6 +78,8 @@ print(f"  Colunas: {colunas}")
 # ============================================================================
 # SEÇÃO 3: REMOVER LINHAS COMPLETAMENTE VAZIAS
 # ============================================================================
+# `axis=1` avalia cada linha; `all` só marca linhas em que todas as colunas
+# estão ausentes. Linhas com pelo menos um valor são preservadas.
 print("\n" + "=" * 80)
 print("SEÇÃO 3: REMOVER LINHAS COMPLETAMENTE VAZIAS")
 print("=" * 80)
@@ -84,6 +95,8 @@ if linhas_vazias > 0:
 # ============================================================================
 # SEÇÃO 4: REMOVER DUPLICATAS
 # ============================================================================
+# A comparação considera todas as colunas. `drop_duplicates()` mantém a
+# primeira ocorrência e remove apenas cópias exatas das linhas.
 print("\n" + "=" * 80)
 print("SEÇÃO 4: REMOVER LINHAS DUPLICADAS")
 print("=" * 80)
@@ -99,6 +112,8 @@ if duplicatas_antes > 0:
 # ============================================================================
 # SEÇÃO 5: CORRIGIR E PADRONIZAR TIPOS DE DADOS
 # ============================================================================
+# As listas incluem nomes de colunas de versões diferentes do arquivo. O teste
+# `col in df.columns` permite processar apenas as variáveis que estão presentes.
 print("\n" + "=" * 80)
 print("SEÇÃO 5: CORRIGIR E PADRONIZAR TIPOS DE DADOS")
 print("=" * 80)
@@ -130,9 +145,14 @@ variaveis_categoricas = [
 print("\nConvertendo variáveis numéricas para tipo float...")
 for col in variaveis_numericas:
     if col in df.columns:
-        # Os valores do CSV usam vírgula como separador decimal (ex.: "500,0").
+        # Os valores usam vírgula decimal (ex.: "500,0"), enquanto o Python
+        # espera ponto. Primeiro normalizamos o texto e depois convertemos.
         valores = df[col].astype("string").str.replace(",", ".", regex=False)
+        # `errors='coerce'` transforma em NaN qualquer conteúdo que não seja
+        # numérico, em vez de interromper o processamento da coluna inteira.
         convertidos = pd.to_numeric(valores, errors='coerce')
+        # Comparamos a origem com o resultado para distinguir ausências que já
+        # existiam de valores preenchidos que falharam na conversão.
         falhas = df[col].notna() & convertidos.isna()
         df[col] = convertidos
         detalhe_falhas = f"; {falhas.sum():,} valores não numéricos" if falhas.any() else ""
@@ -141,13 +161,17 @@ for col in variaveis_numericas:
 print("\nConvertendo variáveis categóricas para tipo string...")
 for col in variaveis_categoricas:
     if col in df.columns:
-        # Converter para string e remover espaços extras
+        # Texto padronizado facilita comparar categorias e remover diferenças
+        # causadas por espaços antes/depois dos nomes.
         df[col] = df[col].astype(str).str.strip()
         print(f"  ✓ {col}")
 
 # ============================================================================
 # SEÇÃO 6: REMOVER VALORES NEGATIVOS INVÁLIDOS
 # ============================================================================
+# Valores negativos não fazem sentido para as medidas monetárias e de área
+# deste projeto. Em vez de apagar o registro inteiro, substituímos somente o
+# campo inválido por NaN, preservando as outras informações do imóvel.
 print("\n" + "=" * 80)
 print("SEÇÃO 6: REMOVER VALORES NEGATIVOS (quando não faz sentido)")
 print("=" * 80)
@@ -171,6 +195,9 @@ for col in deve_ser_positivo:
 # ============================================================================
 # SEÇÃO 7: PADRONIZAR CATEGORIAS (consolidar valores similares)
 # ============================================================================
+# A comparação é feita em maiúsculas para não depender de como a categoria foi
+# capitalizada no CSV. `str.contains` também captura rótulos que contenham o
+# termo (por exemplo, descrições mais longas).
 print("\n" + "=" * 80)
 print("SEÇÃO 7: PADRONIZAR CATEGORIAS")
 print("=" * 80)
@@ -226,6 +253,9 @@ if 'des_uso' in df.columns:
 # ============================================================================
 # SEÇÃO 8: TRATAMENTO DE OUTLIERS (valores extremos)
 # ============================================================================
+# O intervalo interquartil (IQR = Q3 - Q1) mede a dispersão dos 50% centrais.
+# Valores fora de Q1 - 1,5×IQR e Q3 + 1,5×IQR são sinalizados para inspeção,
+# mas não removidos: valores extremos podem ser imóveis reais.
 print("\n" + "=" * 80)
 print("SEÇÃO 8: IDENTIFICAR OUTLIERS (valores muito altos ou baixos)")
 print("=" * 80)
@@ -237,6 +267,7 @@ print("Outliers serão MANTIDOS nos dados (importante para análise)!")
 
 for col in variaveis_numericas:
     if col in df.columns and df[col].notna().sum() > 0:
+        # Quartis e limites são calculados ignorando valores ausentes.
         Q1 = df[col].quantile(0.25)
         Q3 = df[col].quantile(0.75)
         IQR = Q3 - Q1
@@ -256,6 +287,8 @@ for col in variaveis_numericas:
 # ============================================================================
 # SEÇÃO 9: CRIAR VARIÁVEIS DE CONTROLE
 # ============================================================================
+# Essas colunas ajudam a rastrear a posição de cada linha no conjunto já limpo
+# e a avaliar a completude de cada registro nas etapas posteriores.
 print("\n" + "=" * 80)
 print("SEÇÃO 9: CRIAR VARIÁVEIS ADICIONAIS")
 print("=" * 80)
@@ -271,6 +304,8 @@ print("  ✓ Variável 'num_campos_vazios' criada")
 # ============================================================================
 # SEÇÃO 10: RESUMO FINAL DA LIMPEZA
 # ============================================================================
+# O resumo compara os totais inicial e final e calcula a proporção de registros
+# preservados. A contagem de ausências destaca campos úteis para as análises.
 print("\n" + "=" * 80)
 print("SEÇÃO 10: RESUMO FINAL DA LIMPEZA")
 print("=" * 80)
@@ -312,6 +347,8 @@ print("""
 # ============================================================================
 # SEÇÃO 11: SALVAR DADOS LIMPOS
 # ============================================================================
+# A pasta é criada apenas se ainda não existir. O arquivo mantém o separador e
+# a codificação usados na leitura para facilitar as próximas etapas do projeto.
 print("=" * 80)
 print("SEÇÃO 11: SALVANDO DADOS PREPARADOS")
 print("=" * 80)

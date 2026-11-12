@@ -37,11 +37,14 @@ import numpy as np
 from pathlib import Path
 import warnings
 
+# Oculta avisos de bibliotecas para manter o terminal focado nos resultados.
 warnings.filterwarnings('ignore')
 
 # ============================================================================
 # SEÇÃO 1: CARREGAR DADOS
 # ============================================================================
+# O script 03 salva a população com a coluna `em_amostra`. Ela permite derivar
+# os dois grupos para comparação sem realizar um novo sorteio.
 print("=" * 80)
 print("ANÁLISE DESCRITIVA — IPTU 2026 Porto Alegre")
 print("=" * 80)
@@ -65,7 +68,8 @@ except Exception as e:
     print(f"❌ Erro: {e}")
     exit(1)
 
-# Separar população e amostra
+# A população inclui todos os registros. A amostra contém apenas as linhas cuja
+# marcação é verdadeira; as cópias permitem analisar cada grupo separadamente.
 df_populacao = df.copy()
 df_amostra = df[df['em_amostra'] == True].copy()
 
@@ -75,6 +79,8 @@ print(f"  Amostra:   {len(df_amostra):,} registros")
 # ============================================================================
 # SEÇÃO 2: DEFINIR VARIÁVEIS A ANALISAR
 # ============================================================================
+# As listas separam medidas numéricas (resumidas por estatísticas) de categorias
+# (resumidas por contagens e proporções).
 print("\n" + "=" * 80)
 print("SEÇÃO 2: VARIÁVEIS A ANALISAR")
 print("=" * 80)
@@ -108,6 +114,8 @@ for var in variaveis_qualitativas:
 # ============================================================================
 # SEÇÃO 3: ANÁLISE DE VARIÁVEIS QUANTITATIVAS
 # ============================================================================
+# Para cada variável, retiramos ausências antes dos cálculos. Por isso, o número
+# de observações válidas pode variar entre variáveis.
 print("\n" + "=" * 80)
 print("SEÇÃO 3: ESTATÍSTICAS DESCRITIVAS - VARIÁVEIS QUANTITATIVAS")
 print("=" * 80)
@@ -125,7 +133,8 @@ for var in variaveis_quantitativas:
     print(f"📊 {var.upper()}")
     print(f"{'─' * 80}")
     
-    # Dados válidos (não-nulos)
+    # `dropna()` exclui apenas os valores ausentes desta variável; os registros
+    # continuam disponíveis para as análises das demais colunas.
     dados_pop = df_populacao[var].dropna()
     dados_amostra = df_amostra[var].dropna()
     
@@ -136,7 +145,8 @@ for var in variaveis_quantitativas:
     print(f"  População: {n_pop:,} ({100*n_pop/len(df_populacao):.2f}%)")
     print(f"  Amostra:   {n_amostra:,} ({100*n_amostra/len(df_amostra):.2f}%)")
     
-    # Calcular estatísticas
+    # Média e mediana resumem o centro; desvio-padrão e amplitude medem dispersão;
+    # quartis descrevem a distribuição. O CV relaciona desvio-padrão e média.
     stats_pop = {
         'Media': dados_pop.mean(),
         'Mediana': dados_pop.median(),
@@ -161,7 +171,8 @@ for var in variaveis_quantitativas:
         'CV': (dados_amostra.std() / dados_amostra.mean() * 100) if dados_amostra.mean() != 0 else np.nan
     }
     
-    # Tabela comparativa
+    # Organizamos as medidas lado a lado. A diferença percentual usa o valor
+    # absoluto da população como referência para evitar divisor negativo.
     df_comparacao = pd.DataFrame({
         'Estatística': list(stats_pop.keys()),
         'População': list(stats_pop.values()),
@@ -176,7 +187,8 @@ for var in variaveis_quantitativas:
     print("\nESTATÍSTICAS DESCRITIVAS:")
     print(df_comparacao.to_string(index=False))
     
-    # Interpretação
+    # As mensagens traduzem as medidas em termos simples; a tabela acima mantém
+    # os valores numéricos que também serão salvos em CSV.
     print(f"\nINTERPRETAÇÃO:")
     print(f"  Média (valor típico):")
     print(f"    População: R$ {stats_pop['Media']:,.2f}")
@@ -206,6 +218,8 @@ for var in variaveis_quantitativas:
 # ============================================================================
 # SEÇÃO 4: ANÁLISE DE VARIÁVEIS QUALITATIVAS
 # ============================================================================
+# Para cada categoria, contamos ocorrências e calculamos sua participação
+# percentual. `dropna=False` mantém ausências visíveis nos resultados.
 print("\n" + "=" * 80)
 print("SEÇÃO 4: FREQUÊNCIAS - VARIÁVEIS QUALITATIVAS")
 print("=" * 80)
@@ -220,7 +234,8 @@ for var in variaveis_qualitativas:
     print(f"🏷️  {var.upper()}")
     print(f"{'─' * 80}")
     
-    # Contar frequências
+    # Frequência é a contagem; proporção é a participação percentual no grupo.
+    # População e amostra são calculadas separadamente para comparação.
     freq_pop = df_populacao[var].value_counts(dropna=False)
     freq_amostra = df_amostra[var].value_counts(dropna=False)
     
@@ -228,7 +243,8 @@ for var in variaveis_qualitativas:
     prop_pop = 100 * df_populacao[var].value_counts(normalize=True, dropna=False)
     prop_amostra = 100 * df_amostra[var].value_counts(normalize=True, dropna=False)
     
-    # Criar tabela comparativa
+    # Cada linha representa uma categoria observada na população. `get(cat, 0)`
+    # fornece zero se uma categoria da população não ocorrer na amostra.
     df_freq_comp = pd.DataFrame({
         'Categoria': freq_pop.index,
         'Freq_Pop': freq_pop.values,
@@ -249,6 +265,8 @@ for var in variaveis_qualitativas:
 # ============================================================================
 # SEÇÃO 5: SALVAR RESULTADOS
 # ============================================================================
+# Criamos um CSV para cada variável, mantendo as medidas quantitativas separadas
+# das tabelas de frequência das variáveis categóricas.
 print("\n" + "=" * 80)
 print("SEÇÃO 5: SALVANDO RESULTADOS")
 print("=" * 80)
@@ -274,6 +292,8 @@ for var, freq_df in resultados_qualitativas.items():
 # ============================================================================
 # SEÇÃO 6: RESUMO GERAL
 # ============================================================================
+# O resumo confirma os grupos analisados, quantos registros compõem cada um e
+# onde os arquivos resultantes foram gravados.
 print("\n" + "=" * 80)
 print("SEÇÃO 6: RESUMO GERAL")
 print("=" * 80)
@@ -313,6 +333,8 @@ RESULTADOS SALVOS EM:
 # ============================================================================
 # SEÇÃO 7: INTERPRETAÇÃO
 # ============================================================================
+# As orientações ajudam a ler as medidas e comparar os grupos. A proximidade
+# descritiva é um indício, não uma prova formal de representatividade.
 print("=" * 80)
 print("SEÇÃO 7: COMO INTERPRETAR OS RESULTADOS")
 print("=" * 80)

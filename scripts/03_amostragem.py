@@ -32,11 +32,14 @@ import numpy as np
 from pathlib import Path
 import warnings
 
+# Oculta avisos de bibliotecas para manter o relatório de execução legível.
 warnings.filterwarnings('ignore')
 
 # ============================================================================
 # SEÇÃO 1: CARREGAR DADOS PREPARADOS
 # ============================================================================
+# O arquivo desta etapa é produzido pelo script 02. Os caminhos são relativos
+# à pasta do projeto, então não dependem do diretório atual do terminal.
 print("=" * 80)
 print("AMOSTRAGEM — IPTU 2026 Porto Alegre")
 print("=" * 80)
@@ -62,6 +65,9 @@ except Exception as e:
 # ============================================================================
 # SEÇÃO 2: CALCULAR TAMANHO MÍNIMO DA AMOSTRA
 # ============================================================================
+# A fórmula apresentada aplica a correção para população finita. Como a
+# proporção verdadeira é desconhecida, p=0,5 maximiza p(1-p) e fornece um
+# tamanho amostral conservador.
 print("\n" + "=" * 80)
 print("SEÇÃO 2: CÁLCULO DO TAMANHO DA AMOSTRA")
 print("=" * 80)
@@ -84,18 +90,22 @@ FÓRMULA (com correção para população finita):
     E = 0,03 (margem de erro)
 """)
 
-# Parâmetros
+# Parâmetros da fórmula: z representa o nível de confiança, E a margem de erro,
+# p a proporção esperada e N o total de registros disponíveis.
 z = 1.96           # Nível de confiança 95%
 p = 0.50           # Proporção conservadora (máxima variância)
 E = 0.03           # Margem de erro 3%
 N = len(df)        # Tamanho da população
 
-# Cálculo
+# Aplicamos a fórmula da população finita separando numerador e denominador
+# para deixar visíveis as partes que compõem o tamanho amostral.
 numerador = (z**2) * p * (1-p) * N
 denominador = (E**2) * (N-1) + (z**2) * p * (1-p)
 n = numerador / denominador
 
-n_arredondado = int(np.ceil(n))  # Arredondar para cima
+# Como não há fração de registro, arredondamos para cima para não ficar abaixo
+# do tamanho mínimo calculado.
+n_arredondado = int(np.ceil(n))
 
 print(f"""
 CÁLCULO:
@@ -117,6 +127,8 @@ RESULTADO:
 # ============================================================================
 # SEÇÃO 3: CONFIGURAR SEMENTE DE ALEATORIEDADE
 # ============================================================================
+# A semente inicializa o gerador pseudoaleatório; com a mesma semente e os
+# mesmos dados de entrada, a seleção pode ser reproduzida.
 print("=" * 80)
 print("SEÇÃO 3: CONFIGURAÇÃO DA ALEATORIEDADE")
 print("=" * 80)
@@ -140,6 +152,8 @@ np.random.seed(RANDOM_STATE)
 # ============================================================================
 # SEÇÃO 4: SORTEAR A AMOSTRA (AAS - Amostragem Aleatória Simples)
 # ============================================================================
+# O sorteio seleciona posições entre 0 e N-1. `replace=False` impede que uma
+# mesma posição seja escolhida mais de uma vez.
 print("\n" + "=" * 80)
 print("SEÇÃO 4: SORTEIO DA AMOSTRA (AAS - SEM REPOSIÇÃO)")
 print("=" * 80)
@@ -154,7 +168,8 @@ indices_amostra = np.random.choice(
     replace=False  # Sem reposição
 )
 
-# Ordenar os índices para facilitar visualização
+# A ordenação facilita conferir e exibir os índices; não altera quais registros
+# foram sorteados.
 indices_amostra_ordenados = np.sort(indices_amostra)
 
 print(f"✓ Amostra sorteada!")
@@ -165,6 +180,8 @@ print(f"  Última linha da amostra (índice):   {indices_amostra_ordenados[-1]}"
 # ============================================================================
 # SEÇÃO 5: CRIAR VARIÁVEL DE INDICADOR (amostra vs população)
 # ============================================================================
+# A coluna booleana permite manter população e amostra no mesmo arquivo:
+# `True` identifica os registros sorteados e `False` os demais.
 print("\n" + "=" * 80)
 print("SEÇÃO 5: CRIAR INDICADOR DE AMOSTRA")
 print("=" * 80)
@@ -181,6 +198,8 @@ print(f"  Linhas fora:        {len(df) - num_amostra:,}")
 # ============================================================================
 # SEÇÃO 6: EXTRAIR AMOSTRA E GUARDAR ÍNDICES
 # ============================================================================
+# Criamos um recorte independente com os registros selecionados e uma tabela
+# auxiliar com os índices originais, para rastreabilidade do sorteio.
 print("\n" + "=" * 80)
 print("SEÇÃO 6: SALVAR AMOSTRA E ÍNDICES")
 print("=" * 80)
@@ -194,7 +213,8 @@ indices_df = pd.DataFrame({
     'em_amostra': [True] * len(indices_amostra_ordenados)
 })
 
-# Criar pasta de dados processados se não existir
+# Os três arquivos têm finalidades diferentes: amostra isolada, índices sorteados
+# e população completa com o indicador. A pasta é criada se ainda não existir.
 dados_dir.mkdir(exist_ok=True)
 
 # Salvar amostra
@@ -218,6 +238,8 @@ print(f"✓ Dados salvos! ({len(df):,} linhas, com coluna 'em_amostra')")
 # ============================================================================
 # SEÇÃO 7: VERIFICAÇÃO E VALIDAÇÃO
 # ============================================================================
+# Conferimos propriedades básicas do resultado: índices sem repetição e
+# identificador original preenchido para os registros da amostra.
 print("\n" + "=" * 80)
 print("SEÇÃO 7: VALIDAÇÃO DA AMOSTRA")
 print("=" * 80)
@@ -244,6 +266,8 @@ else:
 # ============================================================================
 # SEÇÃO 8: RESUMO ESTATÍSTICO
 # ============================================================================
+# O resumo registra o tamanho relativo da amostra e os parâmetros utilizados,
+# facilitando a conferência e a reprodução da análise.
 print("\n" + "=" * 80)
 print("SEÇÃO 8: COMPARAÇÃO AMOSTRA vs POPULAÇÃO")
 print("=" * 80)
@@ -294,6 +318,7 @@ print(indices_amostra_ordenados[-5:])
 # ============================================================================
 # SEÇÃO 9: DICAS PARA PRÓXIMAS ETAPAS
 # ============================================================================
+# Esta seção resume a sequência do pipeline e como repetir ou alterar o sorteio.
 print("\n" + "=" * 80)
 print("SEÇÃO 9: INFORMAÇÕES IMPORTANTES")
 print("=" * 80)

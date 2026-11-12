@@ -305,14 +305,14 @@ Note a hora no início e no final.
 
 ## ✅ Checklist de Conclusão
 
-- [ ] Executou script 02 com sucesso
-- [ ] Verificou `dados_processados/dados_limpos.csv`
-- [ ] Executou script 03 com sucesso
-- [ ] Verificou `dados_processados/amostra.csv`
-- [ ] Executou script 04 com sucesso
-- [ ] Verificou arquivos em `saidas/desc_*` e `saidas/freq_*`
-- [ ] Executou script 05 com sucesso
-- [ ] Verificou `saidas/testes_hipoteses.csv`
+- [x] Executou script 02 com sucesso
+- [x] Verificou `dados_processados/dados_limpos.csv`
+- [x] Executou script 03 com sucesso
+- [x] Verificou `dados_processados/amostra.csv`
+- [x] Executou script 04 com sucesso
+- [x] Verificou arquivos em `saidas/desc_*` e `saidas/freq_*`
+- [x] Executou script 05 com sucesso
+- [x] Verificou `saidas/testes_hipoteses.csv`
 
 ---
 

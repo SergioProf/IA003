@@ -35,11 +35,14 @@ from scipy import stats
 from pathlib import Path
 import warnings
 
+# Oculta avisos de bibliotecas para manter o relatório de execução legível.
 warnings.filterwarnings('ignore')
 
 # ============================================================================
 # SEÇÃO 1: CARREGAR DADOS
 # ============================================================================
+# A coluna `em_amostra`, criada no script 03, identifica os registros que serão
+# usados para estimar parâmetros e testar as hipóteses.
 print("=" * 80)
 print("INFERÊNCIA ESTATÍSTICA — IPTU 2026 Porto Alegre")
 print("=" * 80)
@@ -63,7 +66,8 @@ except Exception as e:
     print(f"❌ Erro: {e}")
     exit(1)
 
-# Separar população e amostra
+# Mantemos os dados completos como referência descritiva e isolamos a amostra
+# que será usada nos testes de hipóteses.
 df_populacao = df.copy()
 df_amostra = df[df['em_amostra'] == True].copy()
 
@@ -73,6 +77,8 @@ print(f"  Amostra:   {len(df_amostra):,} registros")
 # ============================================================================
 # SEÇÃO 2: PARÂMETROS DOS TESTES
 # ============================================================================
+# O mesmo nível de significância é aplicado às quatro hipóteses. Os testes são
+# bilaterais: diferenças para cima e para baixo contam contra H₀.
 print("\n" + "=" * 80)
 print("SEÇÃO 2: CONFIGURAÇÃO DOS TESTES DE HIPÓTESES")
 print("=" * 80)
@@ -98,6 +104,8 @@ TIPO DE TESTE:
 # ============================================================================
 # SEÇÃO 3: HIPÓTESE 1 - PROPORÇÃO DE APARTAMENTOS
 # ============================================================================
+# Removemos ausências para contar apenas classificações conhecidas. A proporção
+# amostral é testada contra H₀; a proporção populacional é mostrada como referência.
 print("\n" + "=" * 80)
 print("HIPÓTESE 1: PROPORÇÃO DE APARTAMENTOS")
 print("=" * 80)
@@ -131,12 +139,14 @@ print(f"  n válido: {n_amostra_h1:,}")
 print(f"  Apartamentos: {x_amostra_h1:,}")
 print(f"  Proporção: {p_amostra_h1:.4f} ({100*p_amostra_h1:.2f}%)")
 
-# Teste Z para proporção
-# Usar a amostra para testar a hipótese
+# O teste Z padroniza a diferença entre a proporção observada e a hipotética
+# pelo erro-padrão esperado sob H₀. A cauda dupla considera desvios em ambas
+# as direções.
 z_h1 = (p_amostra_h1 - H1_p0) / np.sqrt(H1_p0 * (1 - H1_p0) / n_amostra_h1)
 p_value_h1 = 2 * (1 - stats.norm.cdf(abs(z_h1)))  # Bilateral
 
-# Intervalo de confiança 95% para proporção
+# O intervalo usa a proporção observada e seu erro-padrão para estimar uma faixa
+# plausível para a proporção populacional com confiança de 95%.
 se_h1 = np.sqrt(p_amostra_h1 * (1 - p_amostra_h1) / n_amostra_h1)
 ic_lower_h1 = p_amostra_h1 - 1.96 * se_h1
 ic_upper_h1 = p_amostra_h1 + 1.96 * se_h1
@@ -163,6 +173,8 @@ else:
 # ============================================================================
 # SEÇÃO 4: HIPÓTESE 2 - PROPORÇÃO DE USO RESIDENCIAL
 # ============================================================================
+# Repete-se o procedimento de proporção para a categoria "Residencial",
+# comparando a estimativa amostral ao valor hipotético de 85%.
 print("\n" + "=" * 80)
 print("HIPÓTESE 2: PROPORÇÃO DE USO RESIDENCIAL")
 print("=" * 80)
@@ -196,11 +208,11 @@ print(f"  n válido: {n_amostra_h2:,}")
 print(f"  Residencial: {x_amostra_h2:,}")
 print(f"  Proporção: {p_amostra_h2:.4f} ({100*p_amostra_h2:.2f}%)")
 
-# Teste Z para proporção
+# Estatística Z e valor-p bilateral para comparar a proporção observada com H₀.
 z_h2 = (p_amostra_h2 - H2_p0) / np.sqrt(H2_p0 * (1 - H2_p0) / n_amostra_h2)
 p_value_h2 = 2 * (1 - stats.norm.cdf(abs(z_h2)))  # Bilateral
 
-# Intervalo de confiança 95%
+# Intervalo de confiança aproximado de 95% para a proporção populacional.
 se_h2 = np.sqrt(p_amostra_h2 * (1 - p_amostra_h2) / n_amostra_h2)
 ic_lower_h2 = p_amostra_h2 - 1.96 * se_h2
 ic_upper_h2 = p_amostra_h2 + 1.96 * se_h2
@@ -223,6 +235,8 @@ else:
 # ============================================================================
 # SEÇÃO 5: HIPÓTESE 3 - MÉDIA DO VALOR VENAL
 # ============================================================================
+# Para a variável numérica, calculamos média e desvio-padrão da amostra. O erro
+# padrão (desvio dividido pela raiz de n) mede a incerteza da média amostral.
 print("\n" + "=" * 80)
 print("HIPÓTESE 3: MÉDIA DO VALOR VENAL DO IMÓVEL")
 print("=" * 80)
@@ -258,11 +272,12 @@ print(f"  Média: R$ {mean_amostra_h3:,.2f}")
 print(f"  Desvio-padrão: R$ {std_amostra_h3:,.2f}")
 print(f"  Erro padrão: R$ {se_h3:,.2f}")
 
-# Teste t para média
+# Como o desvio-padrão populacional não é tratado como conhecido, usamos a
+# distribuição t de Student com n-1 graus de liberdade para testar a média.
 t_h3 = (mean_amostra_h3 - H3_mu0) / se_h3
 p_value_h3 = 2 * (1 - stats.t.cdf(abs(t_h3), df=n_amostra_h3-1))  # Bilateral
 
-# Intervalo de confiança 95%
+# O quantil t crítico define a margem de erro do intervalo para a média.
 t_critical = stats.t.ppf(1 - alpha/2, df=n_amostra_h3-1)
 ic_lower_h3 = mean_amostra_h3 - t_critical * se_h3
 ic_upper_h3 = mean_amostra_h3 + t_critical * se_h3
@@ -286,6 +301,8 @@ else:
 # ============================================================================
 # SEÇÃO 6: HIPÓTESE 4 - MÉDIA DA ÁREA CONSTRUÍDA
 # ============================================================================
+# Aplica-se o mesmo teste t usado para o valor venal, agora à área construída e
+# à média hipotética de 100 m².
 print("\n" + "=" * 80)
 print("HIPÓTESE 4: MÉDIA DA ÁREA CONSTRUÍDA")
 print("=" * 80)
@@ -320,11 +337,13 @@ print(f"  Média: {mean_amostra_h4:.2f} m²")
 print(f"  Desvio-padrão: {std_amostra_h4:.2f} m²")
 print(f"  Erro padrão: {se_h4:.2f} m²")
 
-# Teste t para média
+# A estatística t expressa quantos erros-padrão separam a média amostral do
+# valor hipotético. O valor-p bilateral mede evidência contra H₀.
 t_h4 = (mean_amostra_h4 - H4_mu0) / se_h4
 p_value_h4 = 2 * (1 - stats.t.cdf(abs(t_h4), df=n_amostra_h4-1))  # Bilateral
 
-# Intervalo de confiança 95%
+# Intervalo para a média populacional com distribuição t e n-1 graus de
+# liberdade, usando o nível de confiança definido por `alpha`.
 t_critical = stats.t.ppf(1 - alpha/2, df=n_amostra_h4-1)
 ic_lower_h4 = mean_amostra_h4 - t_critical * se_h4
 ic_upper_h4 = mean_amostra_h4 + t_critical * se_h4
@@ -348,6 +367,8 @@ else:
 # ============================================================================
 # SEÇÃO 7: TABELA RESUMIDA DOS RESULTADOS
 # ============================================================================
+# Reunimos estatísticas, valores-p e decisões em uma tabela para facilitar a
+# leitura conjunta e a gravação em arquivo.
 print("\n" + "=" * 80)
 print("SEÇÃO 7: RESUMO DOS TESTES DE HIPÓTESES")
 print("=" * 80)
@@ -385,6 +406,8 @@ print(resultados_testes.to_string(index=False))
 # ============================================================================
 # SEÇÃO 8: SALVAR RESULTADOS
 # ============================================================================
+# A pasta de saída é criada caso não exista e a tabela resumida é exportada
+# como CSV para consulta posterior.
 print("\n" + "=" * 80)
 print("SEÇÃO 8: SALVANDO RESULTADOS")
 print("=" * 80)
