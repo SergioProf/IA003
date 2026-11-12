@@ -81,8 +81,9 @@ Limpar, validar e padronizar os dados da população inteira.
 #### Seção 2: Tipagem de Dados
 - `vlr_venal_imovel` → float64
 - `mtr_area_construida_total` → float64
-- Números decimais com `,` (vírgula)
-- Conversão automática
+- O CSV usa vírgula como separador decimal (ex.: `500,0`).
+- Antes da conversão numérica, substitui `,` por `.` e converte os valores para `float`.
+- Valores que não puderem ser convertidos tornam-se ausentes (`NaN`); o terminal informa a quantidade de valores válidos e, quando houver, o número de falhas por coluna.
 
 #### Seção 3: Remoção de Duplicatas
 - Identifica duplicatas exatas

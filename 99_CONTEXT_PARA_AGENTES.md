@@ -33,6 +33,8 @@ Linhas:         876.248 registros
 Codificação:    UTF-8
 Separador:      ; (ponto-e-vírgula)
 Decimal:        , (vírgula)
+Conversão:      substitui a vírgula decimal por ponto antes de converter para float
+Falhas:         valores não numéricos viram NaN e são contabilizados no terminal
 ```
 
 ### Variáveis

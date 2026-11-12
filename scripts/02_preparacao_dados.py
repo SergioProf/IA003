@@ -130,9 +130,13 @@ variaveis_categoricas = [
 print("\nConvertendo variáveis numéricas para tipo float...")
 for col in variaveis_numericas:
     if col in df.columns:
-        # Converter para float, substituindo erros por NaN
-        df[col] = pd.to_numeric(df[col], errors='coerce')
-        print(f"  ✓ {col}")
+        # Os valores do CSV usam vírgula como separador decimal (ex.: "500,0").
+        valores = df[col].astype("string").str.replace(",", ".", regex=False)
+        convertidos = pd.to_numeric(valores, errors='coerce')
+        falhas = df[col].notna() & convertidos.isna()
+        df[col] = convertidos
+        detalhe_falhas = f"; {falhas.sum():,} valores não numéricos" if falhas.any() else ""
+        print(f"  ✓ {col}: {df[col].notna().sum():,} valores válidos{detalhe_falhas}")
 
 print("\nConvertendo variáveis categóricas para tipo string...")
 for col in variaveis_categoricas:

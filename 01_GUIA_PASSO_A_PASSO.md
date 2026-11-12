@@ -6,10 +6,10 @@
 
 ## 📋 Antes de Começar — Checklist
 
-- [ ] Terminal aberto
-- [ ] Python 3.9+ instalado
-- [ ] Arquivo `iptu_2026.csv` na pasta (verificar)
-- [ ] Dependências instaladas (fazer agora)
+- [x] Terminal aberto
+- [x] Python 3.9+ instalado
+- [x] Arquivo `iptu_2026.csv` na pasta (verificar)
+- [x] Dependências instaladas (fazer agora)
 
 ---
 
@@ -80,6 +80,15 @@ PREPARAÇÃO DE DADOS — IPTU 2026 Porto Alegre
 ```
 
 ### Tempo esperado: 2-3 minutos
+
+### Conversão de valores numéricos
+
+O CSV usa vírgula como separador decimal (por exemplo, `500,0`). O script
+converte essa vírgula para ponto antes de transformar as colunas numéricas em
+`float`. Durante a execução, confira a quantidade de valores válidos exibida
+para cada coluna. Se aparecer a indicação de valores não numéricos, esses
+registros não puderam ser convertidos e devem ser verificados nos dados de
+origem.
 
 ### Verificar resultado:
 - Procure por: `dados_processados/dados_limpos.csv`
