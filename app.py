@@ -8,7 +8,9 @@ from scipy import stats
 
 
 BASE_DIR = Path(__file__).parent
-DATA_FILE = BASE_DIR / "dados_processados" / "dados_com_indicador_amostra.csv"
+LOCAL_DATA_FILE = BASE_DIR / "dados_processados" / "dados_com_indicador_amostra.csv"
+PUBLIC_DATA_FILE = BASE_DIR / "dados_painel" / "dados_painel.csv.gz"
+DATA_FILE = LOCAL_DATA_FILE if LOCAL_DATA_FILE.is_file() else PUBLIC_DATA_FILE
 SAMPLE_COLUMN = "em_amostra"
 ALPHA = 0.05
 
@@ -549,7 +551,7 @@ def main():
 
     if not DATA_FILE.is_file():
         st.error(
-            "Arquivo de dados preparado não encontrado. Execute primeiro "
+            "Arquivo de dados preparado ou reduzido não encontrado. Execute primeiro "
             "`python scripts/02_preparacao_dados.py` e "
             "`python scripts/03_amostragem.py`."
         )

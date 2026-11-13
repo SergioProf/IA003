@@ -25,8 +25,11 @@ Na raiz do projeto, após executar os scripts 02 e 03:
 python -m streamlit run app.py
 ```
 
-O aplicativo lê `dados_processados/dados_com_indicador_amostra.csv`, usando
-somente as oito variáveis analisadas e a coluna `em_amostra`. As três opções
+O aplicativo lê `dados_processados/dados_com_indicador_amostra.csv` quando
+disponível; caso contrário, usa `dados_painel/dados_painel.csv.gz`, gerado por
+`python scripts/06_exportar_dados_painel.py` para o deploy. O arquivo reduzido
+contém somente as oito variáveis analisadas e a coluna `em_amostra`; deve ser
+regenerado após mudanças nos dados ou na amostra. As três opções
 da navegação lateral apresentam população, amostra e inferência/comparação.
 Os parâmetros populacionais e as estimativas amostrais são calculados a partir
 dos registros; o painel não depende dos CSVs de resumo em `saidas/`.

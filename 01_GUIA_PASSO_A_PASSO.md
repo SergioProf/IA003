@@ -255,8 +255,24 @@ Na navegação lateral, escolha um dos três painéis:
 Os gráficos permitem selecionar variáveis e ajustar categorias ou a faixa
 visível do histograma. O limite do histograma afeta somente a visualização; as
 medidas descritivas usam todos os valores válidos. O aplicativo lê
-`dados_processados/dados_com_indicador_amostra.csv` e não publica nem altera os
-arquivos de dados.
+`dados_processados/dados_com_indicador_amostra.csv` quando disponível; caso
+contrário, usa `dados_painel/dados_painel.csv.gz`, versão reduzida para o deploy.
+O aplicativo não altera os arquivos de dados.
+
+### Publicar no Streamlit Community Cloud
+
+Após executar os scripts 02 e 03, gere a base reduzida:
+
+```bash
+python scripts/06_exportar_dados_painel.py
+```
+
+Ela contém todos os registros, mas apenas as oito variáveis do painel e o
+indicador da amostra; não contém endereços completos. Publique o arquivo gerado
+no GitHub junto com o código. Gere-o novamente sempre que os dados preparados
+ou a amostra mudarem. No Streamlit Community Cloud, selecione este repositório,
+a branch `master` e o arquivo `app.py`. Para Python 3.14, as dependências
+específicas estão definidas em `requirements.txt`.
 
 ---
 
