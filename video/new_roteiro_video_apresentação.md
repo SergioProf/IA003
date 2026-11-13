@@ -248,16 +248,16 @@ TOTAL:                            ~5 minutos
 
 ---
 
-#### **Segmento 3C: Teste 2 — Proporção de Uso Residencial (03:35–03:50)**
+#### **Segmento 3C: Teste 2 — Proporção de Uso Exclusivamente Residencial (03:35–03:50)**
 
 **O que mostrar:**
-- Segunda linha: "Proporção de uso residencial"
+- Segunda linha: "Proporção de uso exclusivamente residencial"
 - Expandir o expander
 
 **O que dizer:**
-> "**Teste 2: Proporção de Uso Residencial**
+> "**Teste 2: Proporção de Uso Exclusivamente Residencial**
 >
-> Hipótese nula: **p = 85%** — afirmamos que 85% dos imóveis têm uso residencial.
+> Hipótese nula: **p = 85%** — afirmamos que 85% dos imóveis com uso informado têm uso exclusivamente residencial.
 >
 > Os números:
 > - **Parâmetro populacional**: [leia]%
@@ -266,11 +266,11 @@ TOTAL:                            ~5 minutos
 > - **Valor-p**: [leia] — [GRANDE OU PEQUENO?]
 > - **Decisão**: [Não rejeitar H₀ OU Rejeitar H₀]
 >
-> [Se não rejeita] Não há evidência para negar que 85% dos imóveis são residenciais.
+> [Se não rejeita] Não há evidência suficiente para rejeitar que 85% dos imóveis com uso informado sejam exclusivamente residenciais.
 >
 > [Se rejeita] A proporção real é significativamente diferente de 85%. A população real tem uma proporção de [leia]%, que é [maior/menor] que os 85% esperados.
 >
-> Este teste é importante porque o uso do imóvel determina a alíquota de IPTU — imóveis residenciais têm tributação diferente."
+> A categoria 'não exclusivamente residencial' é distinta e não significa necessariamente que o imóvel seja comercial."
 
 **Tempo:** 15 segundos
 

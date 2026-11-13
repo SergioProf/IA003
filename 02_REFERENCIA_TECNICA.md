@@ -101,7 +101,9 @@ Limpar, validar e padronizar os dados da população inteira.
 - Converte valores negativos nas medidas monetárias e de área para `NaN`, sem remover a linha.
 
 #### Seção 6: Consolidação de categorias
-- Padroniza rótulos de `des_finalidade` e `des_uso` por correspondência de texto.
+- Padroniza rótulos de `des_finalidade` por correspondência de texto. Em
+  `des_uso`, preserva as categorias originais, inclusive a distinção entre
+  "Exclusivamente Residencial" e "Não Exclusivamente Residencial".
 - As correspondências exatas estão nos dicionários `mapa_finalidade` e `mapa_uso` do script.
 
 #### Seção 7: Identificação de outliers
@@ -361,11 +363,15 @@ Onde:
 
 ---
 
-#### Teste H2: Proporção de Uso Residencial
+#### Teste H2: Proporção de Uso Exclusivamente Residencial
 
 **Hipótese:**
-- H₀: Proporção de imóveis residenciais = 85%
-- H₁: Proporção de imóveis residenciais ≠ 85%
+- H₀: Proporção de imóveis de uso exclusivamente residencial = 85%
+- H₁: Proporção de imóveis de uso exclusivamente residencial ≠ 85%
+
+O denominador considera apenas os registros com `des_uso` preenchido. A
+categoria "Não Exclusivamente Residencial" não é contada no evento e não deve
+ser interpretada automaticamente como comercial.
 
 **Método:** Teste Z para proporções
 
@@ -430,7 +436,7 @@ Onde:
 #### Seções 3–6: Testes H1–H4
 - Calcula proporção de apartamentos
 - Realiza teste Z
-- Calcula proporção residencial
+- Calcula proporção de uso exclusivamente residencial
 - Realiza teste Z
 - Calcula média venal
 - Realiza teste t
@@ -455,13 +461,12 @@ saidas/
 ```
 Hipótese,Estatística,Valor-p,Decisão
 "H1: p_Apartamento = 0,40",0.7252,0.468313,Não rejeitar H₀
-"H2: p_Residencial = 0,85",13.5212,0.000000,Rejeitar H₀
+"H2: p_Exclusivamente_Residencial = 0,85",-0.2262,0.821027,Não rejeitar H₀
 "H3: μ_Valor = 400k",-3.2121,0.001357,Rejeitar H₀
 "H4: μ_Área = 100",0.9040,0.366187,Não rejeitar H₀
 ```
 
-O valor-p de H2 aparece como `0.000000` porque a saída CSV o arredonda a seis
-casas decimais. A tabela contém somente estatística, valor-p e decisão; os
+A tabela contém somente estatística, valor-p e decisão; os
 intervalos de confiança e conclusões detalhadas são exibidos no terminal.
 
 ### Resultados da execução mais recente
@@ -469,13 +474,14 @@ intervalos de confiança e conclusões detalhadas são exibidos no terminal.
 | Hipótese | n válido na amostra | Estatística | Valor-p | Decisão (α = 0,05) |
 |----------|---------------------:|------------:|--------:|--------------------|
 | H1: apartamentos, p₀ = 0,40 | 1.066 | z = 0,7252 | 0,468313 | Não rejeitar H₀ |
-| H2: uso residencial, p₀ = 0,85 | 1.036 | z = 13,5212 | < 0,000001 | Rejeitar H₀ |
+| H2: uso exclusivamente residencial, p₀ = 0,85 | 1.036 | z = -0,2262 | 0,821027 | Não rejeitar H₀ |
 | H3: valor venal, μ₀ = R$ 400.000 | 1.066 | t = -3,2121 | 0,001357 | Rejeitar H₀ |
 | H4: área construída, μ₀ = 100 m² | 1.036 | t = 0,9040 | 0,366187 | Não rejeitar H₀ |
 
-O CSV arredonda o valor-p de H2 para `0.000000` com seis casas decimais; isso
-é arredondamento de exibição, não um valor-p igual a zero. Os denominadores
-variam por hipótese porque os testes usam casos válidos para cada variável.
+Em H2, a proporção populacional é 84,58% (720.727 de 852.091 valores
+válidos) e a amostral é 84,75% (878 de 1.036), com IC de 95% de 82,56% a
+86,94%. Os denominadores variam por hipótese porque os testes usam casos
+válidos para cada variável.
 
 ### Interpretação dos Resultados
 

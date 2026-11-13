@@ -197,7 +197,7 @@ INFERÊNCIA ESTATÍSTICA — IPTU 2026 Porto Alegre
 
 TESTANDO HIPÓTESES...
 ✓ H1: Proporção de Apartamentos
-✓ H2: Proporção de Uso Residencial
+✓ H2: Proporção de Uso Exclusivamente Residencial
 ✓ H3: Média do Valor Venal
 ✓ H4: Média da Área Construída
 

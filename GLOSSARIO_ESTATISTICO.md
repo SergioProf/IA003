@@ -44,7 +44,7 @@ Este documento explica os principais conceitos usados no script de exploração 
 
 **Exemplos no nosso caso:**
 - Finalidade: Apartamento, Casa, Salão, Garagem
-- Uso: Residencial, Comercial, Industrial
+- Uso: Exclusivamente Residencial, Não Exclusivamente Residencial, Agrícola
 - Bairro: Centro, Moinhos, Petrópolis, Bom Fim
 
 **O que fazemos:** Contamos QUANTOS em cada categoria (proporção, percentual).

@@ -240,10 +240,10 @@ externa das hipóteses.
 - **H₁:** p ≠ 0,40 (bilateral)
 - **α:** 0,05
 
-### Hipótese 2: Proporção — Uso Residencial
+### Hipótese 2: Proporção — Uso Exclusivamente Residencial
 
 - **Variável:** `des_uso` (válidos: 852.091 após remover duplicatas)
-- **Evento:** Residencial
+- **Evento:** Exclusivamente Residencial
 - **H₀:** p = 0,85
 - **H₁:** p ≠ 0,85 (bilateral)
 - **α:** 0,05

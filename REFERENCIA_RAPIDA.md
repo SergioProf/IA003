@@ -29,7 +29,7 @@ inferência/comparação.
 | Teste | Hipótese nula |
 |-------|---------------|
 | H1 — proporção de apartamentos | p = 0,40 |
-| H2 — proporção de uso residencial | p = 0,85 |
+| H2 — proporção de uso exclusivamente residencial entre casos válidos | p = 0,85 |
 | H3 — média do valor venal | μ = R$ 400.000 |
 | H4 — média da área construída | μ = 100 m² |
 

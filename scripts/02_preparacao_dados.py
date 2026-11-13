@@ -197,9 +197,9 @@ for col in deve_ser_positivo:
 # ============================================================================
 # SEÇÃO 7: PADRONIZAR CATEGORIAS (consolidar valores similares)
 # ============================================================================
-# A comparação é feita em maiúsculas para não depender de como a categoria foi
-# capitalizada no CSV. `str.contains` também captura rótulos que contenham o
-# termo (por exemplo, descrições mais longas).
+# A correspondência de texto abaixo se aplica à finalidade. O uso mantém os
+# rótulos originais, pois "Não Exclusivamente Residencial" não é equivalente
+# a "Exclusivamente Residencial".
 print("\n" + "=" * 80)
 print("SEÇÃO 7: PADRONIZAR CATEGORIAS")
 print("=" * 80)
@@ -230,27 +230,11 @@ if 'des_finalidade' in df.columns:
     unicos = df['des_finalidade'].nunique()
     print(f"  ✓ Categorias consolidadas: {unicos} tipos únicos")
 
-# Consolidar categorias de uso
+# Preservar as categorias originais de uso após a remoção de espaços.
 if 'des_uso' in df.columns:
-    print("\n📌 Padronizando USO...")
-    df['des_uso_upper'] = df['des_uso'].str.upper()
-    
-    mapa_uso = {
-        'RESIDENCIAL': 'Residencial',
-        'RESIDENCIA': 'Residencial',
-        'COMERCIAL': 'Comercial',
-        'COMERCIO': 'Comercial',
-        'INDUSTRIAL': 'Industrial',
-        'MISTO': 'Misto'
-    }
-    
-    for chave, valor in mapa_uso.items():
-        máscara = df['des_uso_upper'].str.contains(chave, na=False)
-        df.loc[máscara, 'des_uso'] = valor
-    
-    df = df.drop('des_uso_upper', axis=1)
+    print("\n📌 Preservando categorias originais de USO...")
     unicos = df['des_uso'].nunique()
-    print(f"  ✓ Categorias consolidadas: {unicos} tipos únicos")
+    print(f"  ✓ Categorias preservadas: {unicos} tipos únicos")
 
 # ============================================================================
 # SEÇÃO 8: TRATAMENTO DE OUTLIERS (valores extremos)

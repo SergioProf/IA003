@@ -15,7 +15,7 @@ O QUE ESTE SCRIPT FAZ:
   
   QUATRO HIPÓTESES TESTADAS:
     H1: Proporção de Apartamentos = 40%
-    H2: Proporção de Uso Residencial = 85%
+    H2: Proporção de Uso Exclusivamente Residencial = 85%
     H3: Média do Valor Venal = R$ 400.000
     H4: Média da Área Construída = 100 m²
 
@@ -172,41 +172,41 @@ else:
     print(f"  → Não há evidência de que a proporção seja diferente de {100*H1_p0:.0f}%")
 
 # ============================================================================
-# SEÇÃO 4: HIPÓTESE 2 - PROPORÇÃO DE USO RESIDENCIAL
+# SEÇÃO 4: HIPÓTESE 2 - PROPORÇÃO DE USO EXCLUSIVAMENTE RESIDENCIAL
 # ============================================================================
-# Repete-se o procedimento de proporção para a categoria "Residencial",
+# Repete-se o procedimento para a categoria "Exclusivamente Residencial",
 # comparando a estimativa amostral ao valor hipotético de 85%.
 print("\n" + "=" * 80)
-print("HIPÓTESE 2: PROPORÇÃO DE USO RESIDENCIAL")
+print("HIPÓTESE 2: PROPORÇÃO DE USO EXCLUSIVAMENTE RESIDENCIAL")
 print("=" * 80)
 
-H2_label = "Proporção de Uso Residencial"
+H2_label = "Proporção de Uso Exclusivamente Residencial"
 H2_p0 = 0.85  # 85%
 
-print(f"\nH₀ (Hipótese Nula):     p = {H2_p0} (85% uso residencial)")
+print(f"\nH₀ (Hipótese Nula):     p = {H2_p0} (85% uso exclusivamente residencial)")
 print(f"H₁ (Hipótese Alternativa): p ≠ {H2_p0}")
 
 # Limpar dados
 dados_h2_pop = df_populacao['des_uso'].dropna()
 dados_h2_amostra = df_amostra['des_uso'].dropna()
 
-# Contar residencial
+# Contar apenas registros de uso exclusivamente residencial.
 n_pop_h2 = len(dados_h2_pop)
-x_pop_h2 = (dados_h2_pop == 'Residencial').sum()
+x_pop_h2 = (dados_h2_pop == 'Exclusivamente Residencial').sum()
 p_pop_h2 = x_pop_h2 / n_pop_h2
 
 n_amostra_h2 = len(dados_h2_amostra)
-x_amostra_h2 = (dados_h2_amostra == 'Residencial').sum()
+x_amostra_h2 = (dados_h2_amostra == 'Exclusivamente Residencial').sum()
 p_amostra_h2 = x_amostra_h2 / n_amostra_h2
 
 print(f"\nPOPULAÇÃO:")
 print(f"  N válido: {n_pop_h2:,}")
-print(f"  Residencial: {x_pop_h2:,}")
+print(f"  Exclusivamente Residencial: {x_pop_h2:,}")
 print(f"  Proporção: {p_pop_h2:.4f} ({100*p_pop_h2:.2f}%)")
 
 print(f"\nAMOSTRA:")
 print(f"  n válido: {n_amostra_h2:,}")
-print(f"  Residencial: {x_amostra_h2:,}")
+print(f"  Exclusivamente Residencial: {x_amostra_h2:,}")
 print(f"  Proporção: {p_amostra_h2:.4f} ({100*p_amostra_h2:.2f}%)")
 
 # Estatística Z e valor-p bilateral para comparar a proporção observada com H₀.
@@ -228,7 +228,7 @@ print(f"  [{100*ic_lower_h2:.2f}%, {100*ic_upper_h2:.2f}%]")
 print(f"\nCONCLUSÃO:")
 if p_value_h2 < alpha:
     print(f"  → Rejeitar H₀")
-    print(f"  → Proporção de uso residencial É SIGNIFICATIVAMENTE DIFERENTE de {100*H2_p0:.0f}%")
+    print(f"  → Proporção de uso exclusivamente residencial É SIGNIFICATIVAMENTE DIFERENTE de {100*H2_p0:.0f}%")
 else:
     print(f"  → Não rejeitar H₀")
     print(f"  → Não há evidência de diferença de {100*H2_p0:.0f}%")
@@ -377,7 +377,7 @@ print("=" * 80)
 resultados_testes = pd.DataFrame({
     'Hipótese': [
         'H1: p_Apartamento = 0,40',
-        'H2: p_Residencial = 0,85',
+        'H2: p_Exclusivamente_Residencial = 0,85',
         'H3: μ_Valor = 400k',
         'H4: μ_Área = 100'
     ],
@@ -436,7 +436,7 @@ O QUE FOI FEITO:
 
 HIPÓTESES TESTADAS:
   1. Proporção de Apartamentos = 40%
-  2. Proporção de Uso Residencial = 85%
+  2. Proporção de Uso Exclusivamente Residencial = 85%
   3. Média do Valor Venal = R$ 400.000
   4. Média da Área Construída = 100 m²
 

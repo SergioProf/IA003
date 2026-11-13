@@ -168,8 +168,9 @@ Método: Z-test
 α: 0,05
 ```
 
-Teste H2 — Proporção Residencial
+Teste H2 — Proporção de Uso Exclusivamente Residencial
 ```
+Evento: des_uso == "Exclusivamente Residencial"; excluir ausências do denominador.
 H₀: p = 0,85
 H₁: p ≠ 0,85
 Método: Z-test

@@ -419,10 +419,10 @@ def render_inference_panel(population, sample):
                 ),
             ),
             (
-                "A proporção de imóveis de uso residencial é diferente de 85%?",
+                "A proporção de imóveis de uso exclusivamente residencial é diferente de 85%?",
                 proportion_test(
-                    population, sample, "des_uso", "Residencial", 0.85,
-                    "Proporção de uso residencial",
+                    population, sample, "des_uso", "Exclusivamente Residencial", 0.85,
+                    "Proporção de uso exclusivamente residencial",
                 ),
             ),
             (
