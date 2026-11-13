@@ -92,11 +92,9 @@ TOTAL:                            ~5 minutos
 > "Agora veja o gráfico de distribuição. Aqui você vê a **forma** como os valores se distribuem.
 >
 > Estou mostrando até o percentil 99%, o que exclui os 1% de imóveis mais caros. Mesmo assim, você vê a [descreva a forma]:
-> - [Se muito assimétrico para a direita] Esta é uma distribuição **assimétrica à direita** — há uma cauda longa de imóveis caros
-> - [Se aproximadamente normal] A distribuição é aproximadamente normal
-> - [Se bimodal] Há dois picos, sugerindo dois grupos distintos de imóveis
->
-> Fora do intervalo exibido, há [leia o número] registros. Estes são outliers — imóveis com valores muito altos ou muito baixos."
+> Esta é uma distribuição **assimétrica à direita** — há uma cauda longa de imóveis caros
+
+> Fora do intervalo exibido, há 8,762 registros. Estes são outliers — imóveis com valores muito altos."
 
 **Tempo:** 30 segundos
 

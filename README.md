@@ -297,13 +297,13 @@ python scripts/05_inferencia_estatistica.py
 - [x] Scripts preparados
 - [x] Ambiente pronto
 - [x] Etapa A (exploração) concluída
-- [ ] Etapa B (preparação) — PRÓXIMA
-- [ ] Etapa C (amostragem)
-- [ ] Etapa D (descritivas)
-- [ ] Etapa E (inferência)
-- [ ] Etapa F (painéis)
-- [ ] Etapa G (vídeo)
-- [ ] Entrega
+- [x] Etapa B (preparação) — PRÓXIMA
+- [x] Etapa C (amostragem)
+- [x] Etapa D (descritivas)
+- [x] Etapa E (inferência)
+- [x] Etapa F (painéis)
+- [x] Etapa G (vídeo)
+- [x] Entrega
 
 ---
 
