@@ -411,35 +411,33 @@ def render_inference_panel(population, sample):
     )
     try:
         results = [
-            proportion_test(
-                population,
-                sample,
-                "des_finalidade",
-                "Apartamento",
-                0.40,
-                "Proporção de apartamentos",
+            (
+                "A proporção de apartamentos é diferente de 40%?",
+                proportion_test(
+                    population, sample, "des_finalidade", "Apartamento", 0.40,
+                    "Proporção de apartamentos",
+                ),
             ),
-            proportion_test(
-                population,
-                sample,
-                "des_uso",
-                "Residencial",
-                0.85,
-                "Proporção de uso residencial",
+            (
+                "A proporção de imóveis de uso residencial é diferente de 85%?",
+                proportion_test(
+                    population, sample, "des_uso", "Residencial", 0.85,
+                    "Proporção de uso residencial",
+                ),
             ),
-            mean_test(
-                population,
-                sample,
-                "vlr_venal_imovel",
-                400000,
-                "Média do valor venal",
+            (
+                "O valor venal médio é diferente de R$ 400 mil?",
+                mean_test(
+                    population, sample, "vlr_venal_imovel", 400000,
+                    "Média do valor venal",
+                ),
             ),
-            mean_test(
-                population,
-                sample,
-                "mtr_area_construida_total",
-                100,
-                "Média da área construída",
+            (
+                "A área construída média é diferente de 100 m²?",
+                mean_test(
+                    population, sample, "mtr_area_construida_total", 100,
+                    "Média da área construída",
+                ),
             ),
         ]
     except ValueError as error:
@@ -447,7 +445,7 @@ def render_inference_panel(population, sample):
         return
 
     table_rows = []
-    for result in results:
+    for _, result in results:
         unit = (
             "R$"
             if result["label"] == "Média do valor venal"
@@ -491,7 +489,8 @@ def render_inference_panel(population, sample):
         use_container_width=True,
     )
 
-    for result in results:
+    for question, result in results:
+        st.markdown(f"**{question}**")
         with st.expander(result["label"]):
             if result["parameter"] == "Proporção":
                 null_description = (
