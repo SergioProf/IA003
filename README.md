@@ -372,4 +372,4 @@ estado atual. Para a sequência vigente, comece por
 
 ---
 
-*Última atualização: 07/11/2026 15:45*
+*Última atualização: 13/11/2026 09:45*
