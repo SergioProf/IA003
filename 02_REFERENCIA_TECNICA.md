@@ -15,6 +15,21 @@ Análise estatística completa de dados de IPTU (Imposto Predial Territorial Urb
 3. **Amostragem aleatória simples** (script 03)
 4. **Análise descritiva** (script 04)
 5. **Inferência estatística** (script 05)
+6. **Painéis interativos** (`app.py`, Streamlit + Plotly)
+
+### Execução dos painéis
+
+Na raiz do projeto, após executar os scripts 02 e 03:
+
+```bash
+python -m streamlit run app.py
+```
+
+O aplicativo lê `dados_processados/dados_com_indicador_amostra.csv`, usando
+somente as oito variáveis analisadas e a coluna `em_amostra`. As três opções
+da navegação lateral apresentam população, amostra e inferência/comparação.
+Os parâmetros populacionais e as estimativas amostrais são calculados a partir
+dos registros; o painel não depende dos CSVs de resumo em `saidas/`.
 
 ---
 

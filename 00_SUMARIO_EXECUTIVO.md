@@ -5,7 +5,8 @@
 > remoção das 5 duplicatas. O pipeline 02–05 foi executado desde então; consulte
 > [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md) e
 > [02_REFERENCIA_TECNICA.md](./02_REFERENCIA_TECNICA.md) para o estado atual.
-> Os três painéis e o vídeo exigidos no enunciado continuam pendentes.
+> Os três painéis locais foram implementados em `app.py`; vídeo e links
+> públicos continuam pendentes.
 
 ## Status inicial: ambiente preparado
 
@@ -196,8 +197,8 @@ Etapa E: Inferência ✅ [EXECUTADA]
       - Testes de hipóteses
       - Comparar com população
 
-Etapa F: Painéis ⬜ [PENDENTE]
-  └─> Implementar os 3 painéis interativos exigidos no enunciado
+Etapa F: Painéis ✅ [IMPLEMENTADOS LOCALMENTE]
+  └─> app.py (Streamlit + Plotly)
       - Painel 1: População
       - Painel 2: Amostra
       - Painel 3: Inferência + Comparação
@@ -324,7 +325,7 @@ externa das hipóteses.
 1. Reexecutar os scripts 02–05 na ordem indicada em
    [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md), para regenerar os
    CSVs com o código atual.
-2. Construir e testar os três painéis interativos exigidos.
+2. Validar visualmente e publicar os três painéis implementados em `app.py`.
 3. Gravar o vídeo de até cinco minutos e disponibilizar os links de entrega.
 
 ### Pontos de Atenção

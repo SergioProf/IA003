@@ -232,8 +232,9 @@ TrabalhoFinal/
 ```
 
 Os artefatos atuais incluem 4 CSVs intermediários em `dados_processados/` e
-9 CSVs de resultado em `saidas/`. Os três painéis, o vídeo e os links acessíveis
-exigidos no enunciado ainda não estão no repositório.
+9 CSVs de resultado em `saidas/`. O aplicativo `app.py` implementa os três
+painéis locais; o vídeo e os links acessíveis exigidos no enunciado continuam
+pendentes.
 
 ---
 
@@ -472,6 +473,6 @@ Este projeto demonstra:
 **Versão:** 1.0  
 **Última atualização:** 12/11/2026
 **Público:** Agentes IA/LLM  
-**Status:** Pipeline analítico executado; painéis, vídeo e links pendentes
+**Status:** Pipeline analítico e painéis locais prontos; vídeo e links pendentes
 
 Para humanos: Leia `00_LEIA_PRIMEIRO.md` ou `01_GUIA_PASSO_A_PASSO.md`

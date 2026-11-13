@@ -25,5 +25,5 @@ mapa.
 ## Estado da entrega
 
 Os scripts analíticos foram executados com sucesso e os CSVs correspondem ao
-código atual. Ainda faltam os três painéis interativos, o vídeo de até cinco
-minutos e os links acessíveis exigidos pelo enunciado.
+código atual. Os três painéis locais estão em `app.py`; ainda faltam o vídeo de
+até cinco minutos e os links acessíveis exigidos pelo enunciado.

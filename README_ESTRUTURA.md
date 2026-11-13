@@ -176,4 +176,4 @@ Comece por [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md).
 
 ---
 
-**Status:** Sequência documental vigente; painéis e vídeo ainda pendentes
+**Status:** Sequência documental vigente; painéis locais implementados; vídeo e publicação pendentes

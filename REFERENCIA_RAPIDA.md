@@ -15,8 +15,14 @@
 - Amostra: 1.066 registros, AAS sem reposição, semente 42.
 - O pipeline 02–05 foi executado e gerou 4 arquivos intermediários e 9 CSVs em
   `saidas/`.
-- Os painéis, o vídeo de até cinco minutos e os links acessíveis continuam
-  pendentes conforme o [enunciado](./Enunciado.txt).
+- Os três painéis locais estão implementados em `app.py`; vídeo e publicação
+  com links acessíveis continuam pendentes conforme o [enunciado](./Enunciado.txt).
+
+## Abrir os painéis
+
+Após executar os scripts 02 e 03, execute `python -m streamlit run app.py` na
+raiz do projeto. A navegação lateral alterna entre população, amostra e
+inferência/comparação.
 
 ## Hipóteses implementadas
 

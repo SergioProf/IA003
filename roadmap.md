@@ -1,9 +1,9 @@
 # Roadmap — Trabalho final de Estatística
 
-> **Estado em 12/11/2026:** os scripts 01–05 e os seus artefatos existem no
+> **Estado em 13/11/2026:** os scripts 01–05 e os seus artefatos existem no
 > repositório, e os scripts 02–05 foram reexecutados após os ajustes recentes.
-> Os três painéis, o vídeo de até cinco
-> minutos e os links acessíveis exigidos no enunciado continuam pendentes.
+> Os três painéis foram implementados localmente em `app.py`. O vídeo de até
+> cinco minutos e a publicação dos painéis em links acessíveis continuam pendentes.
 > Para o estado detalhado e a ordem de leitura, consulte
 > [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md).
 
@@ -64,25 +64,29 @@ correspondem ao IPTU 2026. O conjunto oficial está em
 
 ### Etapa D — Painel 1: população
 
-- Mostrar N total e N válido por variável.
-- Exibir frequências e proporções de uso, finalidade, bairro e divisão fiscal; agrupar categorias raras quando necessário e justificar.
-- Mostrar média, mediana, desvio-padrão, quartis e distribuições quantitativas.
-- Usar histogramas e boxplots para áreas/valores. Se usar escala logarítmica, explicá-la; valores extremos não devem ocultar o padrão.
-- Distinguir registros, unidades e bairros; rotular bem moeda e área.
+- Implementado em `app.py`: N, casos válidos, ausências, estatísticas e
+  distribuições das variáveis quantitativas e qualitativas.
+- Categorias são ordenadas por frequência e agrupadas em “Demais categorias”;
+  o histograma permite ajustar o percentil superior visível e informa os
+  valores excluídos somente do gráfico.
+- Rótulos exibem as unidades de moeda e área; valide a legibilidade dos painéis.
 
 ### Etapa E — Painel 2: amostra
 
-- Reproduzir os indicadores e gráficos usando exclusivamente os registros sorteados.
-- Informar N total/válido, semente e método de seleção.
-- Manter definições, categorias e escalas comparáveis ao Painel 1.
-- Interpretar diferenças como variabilidade amostral e/ou efeito de dados faltantes, sem tratá-las automaticamente como erro.
+- Implementado em `app.py`: as medidas da amostra usam exclusivamente linhas
+  marcadas em `em_amostra`; as tabelas e distribuições permitem comparação com
+  a população usando definições comuns.
+- O painel informa o tamanho dos grupos; a barra lateral identifica AAS sem
+  reposição e semente 42.
 
 ### Etapa F — Painel 3: inferência e comparação
 
-- Fixar o nível de significância antes das conclusões (sugestão: α = 5%).
-- Por hipótese, informar estimativa, intervalo de confiança, H₀/H₁, estatística, valor-p e conclusão em contexto.
-- Comparar estimativa e intervalo com o parâmetro populacional calculado diretamente na base completa. O valor populacional não entra no cálculo do teste/intervalo.
-- Verificar pressupostos, extremos, tamanho válido e independência; várias unidades podem pertencer ao mesmo lote fiscal.
+- Implementado em `app.py` com α = 5% e quatro hipóteses: duas proporções e
+  duas médias.
+- O painel apresenta H₀/H₁, estimativa, IC de 95%, estatística, valor-p,
+  decisão, N válido e parâmetro populacional calculado diretamente.
+- As limitações de aproximação normal, assimetria, independência e ausências
+  são exibidas junto aos resultados; devem ser discutidas na apresentação.
 
 **Quatro hipóteses implementadas no script 05** (o enunciado pede pelo menos duas de proporção e duas de média):
 
@@ -95,16 +99,16 @@ Os valores de referência foram adotados no código, mas precisam de justificati
 
 ### Etapa G — Construir e publicar painéis
 
-- Ferramenta escolhida: **Streamlit + Plotly**, usando gráficos Plotly quando forem úteis para interação.
-- Implementar os três painéis como seções/páginas no Streamlit, com títulos, unidades, fonte, filtros e notas metodológicas.
-- Reutilizar definições e codificação visual para facilitar comparação.
-- Verificar legibilidade, interações e acesso sem solicitação de autorização.
-- Publicar e guardar os links finais.
+- Ferramenta: **Streamlit + Plotly**. Para executar localmente:
+  `python -m streamlit run app.py`.
+- Três painéis implementados como páginas selecionáveis na navegação lateral.
+- Ainda falta validar a publicação, disponibilizar os links sem solicitação de
+  autorização e guardar os links finais.
 
 ### Etapa H — Vídeo e entrega
 
 - **Prazo informado:** 15/11/2026 (domingo; confirmar se a referência era sábado, 14/11/2026).
-- Os painéis ainda não estão no repositório; concluir e validar antes de gravar.
+- Validar os painéis e publicar antes de gravar.
 - Roteiro de até 5 minutos: contexto/fonte (≈40 s), população/AAS (≈60 s), painéis descritivos (≈60 s), inferência/comparação (≈100 s), limitações/conclusão (≈40 s).
 - Explicar interpretação: diferença entre estimativa e parâmetro, o que o intervalo permite concluir e como a variabilidade amostral limita a leitura.
 - Gravar, revisar duração/áudio/legibilidade e publicar no YouTube com acesso adequado à disciplina.
@@ -112,9 +116,9 @@ Os valores de referência foram adotados no código, mas precisam de justificati
 
 ## 5. Próximas etapas
 
-1. Construir e validar os três painéis interativos exigidos no enunciado.
+1. Validar visualmente e publicar os painéis implementados em `app.py`.
 2. Gravar e publicar o vídeo com até cinco minutos.
-3. Disponibilizar e testar os links de entrega.
+3. Testar os links de entrega sem solicitação de autorização.
 4. Justificar os valores de referência das hipóteses e relatar pressupostos, casos válidos e limitações.
 
 ## 6. Referências

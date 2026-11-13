@@ -1,7 +1,7 @@
 # 🎯 LEIA PRIMEIRO — Guia de Início Rápido
 
 **Tempo de leitura:** 3 minutos  
-**Status:** Pipeline 02–05 executado com o código atual | ⬜ Painéis e vídeo pendentes
+**Status:** Pipeline 02–05 executado | ✅ Painéis locais | ⬜ Vídeo e publicação pendentes
 
 ---
 
@@ -41,8 +41,16 @@ python scripts/05_inferencia_estatistica.py
 
 Os scripts geram os arquivos de preparação, amostra e análise. Os scripts
 02–05 foram executados após os ajustes recentes e os CSVs foram atualizados.
-Os painéis interativos e o vídeo exigidos no enunciado ainda precisam ser
-produzidos.
+Os três painéis interativos já podem ser abertos localmente. O vídeo e a
+publicação dos painéis com links acessíveis ainda estão pendentes.
+
+### 4️⃣ Abra os painéis interativos
+```bash
+python -m streamlit run app.py
+```
+
+Use a navegação lateral para alternar entre População, Amostra e Inferência e
+comparação.
 
 ---
 

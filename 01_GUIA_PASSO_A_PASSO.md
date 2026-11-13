@@ -230,10 +230,33 @@ Arquivos do pipeline:
 Total: 13 arquivos CSV: 4 intermediários e 9 resultados em saidas/.
 
 Os scripts 02–05 foram executados na ordem acima após os ajustes recentes e os
-CSVs estão atualizados. O enunciado também exige três painéis interativos, um
-vídeo de até 5 minutos e os links de entrega; esses itens não estão presentes
-neste repositório e permanecem pendentes.
+CSVs estão atualizados. Os três painéis locais estão disponíveis em `app.py`;
+ainda faltam o vídeo de até 5 minutos e a publicação dos painéis em links de
+acesso público.
 ```
+
+## 📊 Abrir os Painéis Streamlit
+
+Depois de executar os scripts 02 e 03 e instalar as dependências, inicie o
+aplicativo na raiz do projeto:
+
+```bash
+python -m streamlit run app.py
+```
+
+Na navegação lateral, escolha um dos três painéis:
+
+1. **População:** medidas e distribuições dos registros preparados.
+2. **Amostra:** as mesmas medidas para os registros sorteados, com referência
+   comparativa da população.
+3. **Inferência e comparação:** quatro testes, intervalos de confiança,
+   parâmetros populacionais e conclusões.
+
+Os gráficos permitem selecionar variáveis e ajustar categorias ou a faixa
+visível do histograma. O limite do histograma afeta somente a visualização; as
+medidas descritivas usam todos os valores válidos. O aplicativo lê
+`dados_processados/dados_com_indicador_amostra.csv` e não publica nem altera os
+arquivos de dados.
 
 ---
 
@@ -341,10 +364,11 @@ Depois que terminar:
 1. Revise os arquivos em `saidas/`
 2. Abra `testes_hipoteses.csv` para ver as conclusões
 3. Leia `02_REFERENCIA_TECNICA.md` para entender em detalhe
-4. Próxima etapa: Criar painéis Streamlit
+4. Execute `python -m streamlit run app.py` e valide os três painéis
+5. Publique os painéis e grave o vídeo de até 5 minutos
 
 ---
 
-**Status:** Pipeline analítico executado; painéis, vídeo e links finais pendentes.
+**Status:** Pipeline analítico e painéis locais prontos; vídeo e links finais pendentes.
 
 Dúvidas? Releia esta documentação ou procure no código (tudo está comentado em Português!)
