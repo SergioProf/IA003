@@ -51,9 +51,15 @@ NUMERIC_VARIABLES = [
 REQUIRED_COLUMNS = list(VARIABLES) + [SAMPLE_COLUMN]
 
 
-@st.cache_data(show_spinner="Carregando os dados preparados...")
 def load_data():
-    header = pd.read_csv(DATA_FILE, sep=";", encoding="utf-8", nrows=0)
+    file_stat = DATA_FILE.stat()
+    return load_data_cached(DATA_FILE, file_stat.st_mtime_ns, file_stat.st_size)
+
+
+@st.cache_data(show_spinner="Carregando os dados preparados...", max_entries=2)
+def load_data_cached(data_file, modification_time_ns, file_size):
+    # A revisão do arquivo participa da chave do cache para evitar dados antigos.
+    header = pd.read_csv(data_file, sep=";", encoding="utf-8", nrows=0)
     missing_columns = sorted(set(REQUIRED_COLUMNS) - set(header.columns))
     if missing_columns:
         raise ValueError(
@@ -62,7 +68,7 @@ def load_data():
         )
 
     data = pd.read_csv(
-        DATA_FILE,
+        data_file,
         sep=";",
         encoding="utf-8",
         usecols=REQUIRED_COLUMNS,
@@ -558,7 +564,7 @@ def main():
 
     try:
         data = load_data()
-    except (ValueError, UnicodeDecodeError) as error:
+    except (OSError, ValueError, UnicodeDecodeError) as error:
         st.error(f"Não foi possível carregar os dados: {error}")
         st.stop()
 

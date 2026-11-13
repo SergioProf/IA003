@@ -258,6 +258,8 @@ medidas descritivas usam todos os valores válidos. O aplicativo lê
 `dados_processados/dados_com_indicador_amostra.csv` quando disponível; caso
 contrário, usa `dados_painel/dados_painel.csv.gz`, versão reduzida para o deploy.
 O aplicativo não altera os arquivos de dados.
+Ao atualizar o arquivo de dados, o painel recarrega a versão modificada na
+próxima interação.
 
 ### Publicar no Streamlit Community Cloud
 
