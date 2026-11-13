@@ -87,9 +87,9 @@ def format_number(value, decimals=2):
     return formatted.replace(",", "_").replace(".", ",").replace("_", ".")
 
 
-def display_value(value, variable):
+def display_value(value, variable, decimals=2):
     unit = VARIABLES[variable]["unit"]
-    number = format_number(value)
+    number = format_number(value, decimals=decimals)
     if unit == "R$":
         return f"R$ {number}"
     if unit:
@@ -134,16 +134,38 @@ def render_numeric_chart(variable, population, sample, compare, max_percentile):
         widths = np.diff(edges)
         density = counts / (counts.sum() * widths) if counts.sum() else counts
         centers = (edges[:-1] + edges[1:]) / 2
+        is_currency = VARIABLES[variable]["unit"] == "R$"
         figure.add_trace(
             go.Scatter(
                 x=centers,
                 y=density,
                 mode="lines",
                 name=label,
-                hovertemplate="%{x:,.2f}<br>Densidade: %{y:.6g}<extra>%{fullData.name}</extra>",
+                customdata=(
+                    [display_value(value, variable) for value in centers]
+                    if is_currency
+                    else None
+                ),
+                hovertemplate=(
+                    "%{customdata}"
+                    if is_currency
+                    else "%{x:,.2f}"
+                )
+                + "<br>Densidade: %{y:.6g}<extra>%{fullData.name}</extra>",
             )
         )
         excluded[label] = len(values) - len(visible)
+
+    if VARIABLES[variable]["unit"] == "R$":
+        tick_values = np.linspace(lower_bound, upper_bound, 6)
+        figure.update_xaxes(
+            tickmode="array",
+            tickvals=tick_values,
+            ticktext=[
+                display_value(value, variable, decimals=0)
+                for value in tick_values
+            ],
+        )
 
     figure.update_layout(
         title="Distribuição dos valores válidos",
@@ -156,9 +178,15 @@ def render_numeric_chart(variable, population, sample, compare, max_percentile):
     exclusions = "; ".join(
         f"{label}: {count:,}" for label, count in excluded.items()
     )
+    interval = (
+        f"{display_value(lower_bound, variable)}–"
+        f"{display_value(upper_bound, variable)}"
+        if VARIABLES[variable]["unit"] == "R$"
+        else f"{format_number(lower_bound)}–{format_number(upper_bound)}"
+    )
     st.caption(
         f"O gráfico limita a exibição ao percentil {max_percentile:g} da população "
-        f"(intervalo {format_number(lower_bound)}–{format_number(upper_bound)}). "
+        f"(intervalo {interval}). "
         f"Valores fora do intervalo não aparecem — {exclusions}. "
         "As medidas descritivas acima usam todos os valores válidos."
     )
@@ -274,6 +302,17 @@ def render_descriptive_panel(page, population, sample):
             table["Amostra"] = [sample_stats[key] for key in stat_rows]
         else:
             table["População"] = [pop_stats[key] for key in stat_rows]
+        if VARIABLES[variable]["unit"] == "R$":
+            for column in ("População", "Amostra"):
+                if column in table:
+                    table[column] = [
+                        format_number(value, decimals=0)
+                        if statistic == "N válido"
+                        else display_value(value, variable)
+                        for statistic, value in zip(
+                            stat_rows, table[column]
+                        )
+                    ]
         st.dataframe(table, hide_index=True, use_container_width=True)
 
         percentile = st.slider(
