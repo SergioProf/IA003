@@ -1,10 +1,8 @@
-# 📚 DOCUMENTAÇÃO DO PROJETO — ESTRUTURA FINAL
+# 📚 Documentação do projeto — estrutura e sequência
 
 ## ✨ VOCÊ CHEGOU AQUI?
 
-**Parabéns!** A documentação foi reorganizada com sucesso.
-
-Abra: **[00_LEIA_PRIMEIRO.md](00_LEIA_PRIMEIRO.md)** ← COMECE AQUI!
+Comece por [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md).
 
 ---
 
@@ -44,14 +42,16 @@ Abra: **[00_LEIA_PRIMEIRO.md](00_LEIA_PRIMEIRO.md)** ← COMECE AQUI!
 | **02** | [02_REFERENCIA_TECNICA.md](02_REFERENCIA_TECNICA.md) | Humanos | 20 min | Detalhes completos de implementação |
 | **99** | [99_CONTEXT_PARA_AGENTES.md](99_CONTEXT_PARA_AGENTES.md) | IA/LLM | - | Contexto estruturado para sistemas IA |
 
-### Documentação Original (Mantida)
+### Documentação complementar
 
 | Arquivo | Propósito |
 |---------|-----------|
-| [00_README.md](00_README.md) | Overview do projeto original |
-| [00_SUMARIO_EXECUTIVO.md](00_SUMARIO_EXECUTIVO.md) | Resumo executivo |
-| [roadmap.md](roadmap.md) | Planejamento e timeline |
-| [GLOSSARIO_ESTATISTICO.md](GLOSSARIO_ESTATISTICO.md) | Definições de termos |
+| [00_README.md](00_README.md) | Registro histórico da exploração inicial |
+| [00_SUMARIO_EXECUTIVO.md](00_SUMARIO_EXECUTIVO.md) | Registro histórico e resumo |
+| [roadmap.md](roadmap.md) | Status atual e etapas pendentes |
+| [GLOSSARIO_ESTATISTICO.md](GLOSSARIO_ESTATISTICO.md) | Conceitos estatísticos |
+| [REFERENCIA_RAPIDA.md](REFERENCIA_RAPIDA.md) | Atalhos e fatos do estado atual |
+| [RESUMO_REORGANIZACAO.md](RESUMO_REORGANIZACAO.md) | Resumo da documentação e do trabalho |
 
 ### Dados e Metadados
 
@@ -66,7 +66,7 @@ Abra: **[00_LEIA_PRIMEIRO.md](00_LEIA_PRIMEIRO.md)** ← COMECE AQUI!
 
 | Arquivo | Propósito |
 |---------|-----------|
-| [_MAPA_DE_LIMPEZA.md](_MAPA_DE_LIMPEZA.md) | Registro de arquivos removidos |
+| [_MAPA_DE_LIMPEZA.md](_MAPA_DE_LIMPEZA.md) | Mapa da documentação e estado das entregas |
 
 ---
 
@@ -113,31 +113,21 @@ Abra: **[00_LEIA_PRIMEIRO.md](00_LEIA_PRIMEIRO.md)** ← COMECE AQUI!
 
 ## ✅ O Que Mudou
 
-### Antes (CONFUSO ❌)
-- 22 arquivos de documentação
-- Múltiplas entradas com nomes similares
-- "COMECE_AQUI" vs "COMECE_AGORA" vs "INICIO_RAPIDO" — qual escolher?
-- Conteúdo duplicado
-- Impossível saber por onde começar
-
-### Depois (CLARO ✅)
-- 4 arquivos principais bem estruturados
-- 1 entrada óbvia: **00_LEIA_PRIMEIRO.md**
-- Sequência clara: **0 → 1 → 2** (ou direto **99** se for IA)
-- Cada arquivo tem propósito único
-- Muito mais fácil de manter
+### Sequência
+- Três guias humanos: **00 → 01 → 02**.
+- Contexto para agentes: **99**.
+- Glossário, enunciado, fonte, dicionário e roadmap são referências complementares.
 
 ---
 
 ## 📊 Estatísticas
 
-| Métrica | Antes | Depois | Melhoria |
-|---------|-------|--------|----------|
-| Arquivos doc | 22 | 4 | -82% |
-| Pontos de entrada | 6 | 1 | -83% |
-| Redundância | Alta | Nenhuma | 100% |
-| Clareza | Baixa | Alta | ⬆️ |
-| Tempo orientação | 15+ min | 3 min | -80% |
+| Leitor | Comece por |
+|---------|------------|
+| Pessoa executando o trabalho | [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md) |
+| Pessoa executando os scripts | [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md) |
+| Pessoa buscando detalhes técnicos | [02_REFERENCIA_TECNICA.md](./02_REFERENCIA_TECNICA.md) |
+| Agente de IA | [99_CONTEXT_PARA_AGENTES.md](./99_CONTEXT_PARA_AGENTES.md) |
 
 ---
 
@@ -186,6 +176,4 @@ Abra: **[00_LEIA_PRIMEIRO.md](00_LEIA_PRIMEIRO.md)** ← COMECE AQUI!
 
 ---
 
-**Versão:** 2.0 (Reorganizada)  
-**Data:** 2024  
-**Status:** ✅ Pronto para uso
+**Status:** Sequência documental vigente; painéis e vídeo ainda pendentes

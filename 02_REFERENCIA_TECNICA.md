@@ -23,12 +23,14 @@ Análise estatística completa de dados de IPTU (Imposto Predial Territorial Urb
 ### Arquivo Source
 - **Nome:** `iptu_2026.csv`
 - **Tamanho:** ~210 MB
-- **Linhas:** 876.248 registros
-- **Colunas:** 11 variáveis
+- **Registros de dados:** 876.248
+- **Colunas originais:** 32
 - **Codificação:** UTF-8
 - **Separador:** Ponto-e-vírgula (`;`)
+- **População analítica atual:** 876.243 registros, após remoção de 5 duplicatas exatas
+- **Colunas após preparação:** 34 (32 originais + 2 auxiliares)
 
-### Variáveis Disponíveis
+### Variáveis Usadas nas Análises
 
 | Código | Nome | Tipo | Descrição | Valores Únicos |
 |--------|------|------|-----------|----------------|
@@ -36,29 +38,17 @@ Análise estatística completa de dados de IPTU (Imposto Predial Territorial Urb
 | `mtr_area_construida_total` | Área Construída | Numérico | m² construído | ~3k |
 | `vlr_imposto` | Valor do Imposto | Numérico | IPTU anual (R$) | ~200k |
 | `vlr_aliquota` | Alíquota | Numérico | Taxa do imposto (%) | ~100 |
-| `des_finalidade` | Finalidade | Categórica | Uso principal (Residencial, Comercial, etc) | 6 |
-| `des_uso` | Uso Específico | Categórica | Classificação detalhada | 15 |
-| `nme_endloc_bairro_cdl` | Bairro | Categórica | Bairro do imóvel | 98 |
-| `num_divisao_fiscal` | Divisão Fiscal | Categórica | Zona fiscal | 5 |
-| `num_sequencial_imovel` | Sequencial | Numérico | ID do imóvel | 876.248 |
-| `num_terreno` | Terreno | Numérico | Identificação | - |
-| `num_quadra` | Quadra | Numérico | Identificação | - |
+| `des_finalidade` | Finalidade | Categórica | Finalidade registrada para o imóvel | variável |
+| `des_uso` | Uso | Categórica | Classificação de uso | variável |
+| `nme_endloc_bairro_cdl` | Bairro | Categórica | Bairro do imóvel | variável |
+| `num_divisao_fiscal` | Divisão Fiscal | Categórica | Divisão fiscal | 3 |
 
-### Tipos de Dados (Após Preparação)
+As demais colunas da fonte estão no cabeçalho de `iptu_2026.csv` e no
+dicionário oficial. A preparação adiciona `indice_original` e
+`num_campos_vazios`; não cria um identificador chamado `num_sequencial_imovel`.
 
-```
-vlr_venal_imovel           float64   (R$)
-mtr_area_construida_total  float64   (m²)
-vlr_imposto                float64   (R$)
-vlr_aliquota               float64   (%)
-des_finalidade             object    (texto)
-des_uso                    object    (texto)
-nme_endloc_bairro_cdl      object    (texto)
-num_divisao_fiscal         int64     (número)
-num_sequencial_imovel      int64     (ID)
-num_terreno                float64   (opcional)
-num_quadra                 float64   (opcional)
-```
+As quatro primeiras variáveis da tabela são tratadas como quantitativas; as
+quatro últimas são usadas como categorias nas análises.
 
 ---
 
@@ -72,79 +62,54 @@ Limpar, validar e padronizar os dados da população inteira.
 
 ### Etapas Implementadas
 
-#### Seção 1: Carregamento
-- Lê `iptu_2026.csv` com encoding UTF-8
-- Sem limite de linhas (lê tudo)
-- Separador: `;` (ponto-e-vírgula)
-- Resultado: 876.248 linhas
+#### Seção 1: Carregamento e estado inicial
+- Lê `iptu_2026.csv` em UTF-8, separado por `;`.
+- A fonte atual contém 876.248 registros e 32 colunas.
 
-#### Seção 2: Tipagem de Dados
-- `vlr_venal_imovel` → float64
-- `mtr_area_construida_total` → float64
-- O CSV usa vírgula como separador decimal (ex.: `500,0`).
-- Antes da conversão numérica, substitui `,` por `.` e converte os valores para `float`.
-- Valores que não puderem ser convertidos tornam-se ausentes (`NaN`); o terminal informa a quantidade de valores válidos e, quando houver, o número de falhas por coluna.
+#### Seção 2: Remoção de linhas completamente vazias
+- Verifica linhas em que todas as colunas estão ausentes.
+- Não há linhas totalmente vazias no arquivo atual.
 
-#### Seção 3: Remoção de Duplicatas
-- Identifica duplicatas exatas
-- Encontrado: 5 linhas duplicadas
-- Removidas usando `drop_duplicates()`
+#### Seção 3: Remoção de duplicatas
+- Remove 5 linhas duplicadas exatas com `drop_duplicates()`.
 
-#### Seção 4: Remoção de Linhas Vazias
-- Identifica linhas completamente vazias
-- Encontrado: 5 linhas vazias
-- Removidas
+#### Seção 4: Tipagem e limpeza dos valores
+- Converte as variáveis quantitativas usadas na análise para `float`.
+- Troca vírgula decimal por ponto antes da conversão.
+- Valores não convertíveis tornam-se `NaN` e são contabilizados.
+- Remove espaços externos e padroniza os textos das variáveis categóricas usadas.
 
-#### Seção 5: Tratamento de Valores Ausentes
-- `des_uso`: 24.152 NaN (2,75%)
-- `mtr_area_construida_total`: 24.057 NaN (2,74%)
-- Mantém NaN (não remove — importante para análise)
+#### Seção 5: Tratamento de valores negativos
+- Converte valores negativos nas medidas monetárias e de área para `NaN`, sem remover a linha.
 
-#### Seção 6: Limpeza de Strings
-- Remove espaços em branco extras
-- Padroniza maiúsculas/minúsculas
-- Aplica a todas as colunas de texto
+#### Seção 6: Consolidação de categorias
+- Padroniza rótulos de `des_finalidade` e `des_uso` por correspondência de texto.
+- As correspondências exatas estão nos dicionários `mapa_finalidade` e `mapa_uso` do script.
 
-#### Seção 7: Consolidação de Categorias
-Reclassificação de valores inconsistentes:
+#### Seção 7: Identificação de outliers
+- Usa IQR: valores abaixo de Q1 - 1,5×IQR ou acima de Q3 + 1,5×IQR são quantificados no terminal.
+- Mantém os valores extremos; o script não cria uma coluna `eh_outlier`.
 
-**des_finalidade:**
-- "Residencial", "Apto", "Residencia" → "Residencial"
-- "Comercial", "Loja", "Comercio" → "Comercial"
-- Etc.
+#### Seção 8: Variáveis auxiliares
+- Cria `indice_original` para rastrear a posição após a limpeza.
+- Cria `num_campos_vazios` para contar ausências por registro.
 
-**des_uso:**
-- "Residencial" → "Residencial"
-- "Apartamento", "Apto" → "Apartamento"
-- "Casa", "Residencia" → "Casa"
-- Etc.
+#### Ausências na população processada atual
+- `des_uso`: 24.152
+- `mtr_area_construida_total`: 24.057
+- `vlr_venal_imovel`: 43
+- `nme_endloc_bairro_cdl`: 507
+- As ausências são mantidas para que cada análise use os casos válidos da variável.
 
-#### Seção 8: Detecção de Outliers
-- Usa IQR (Intervalo Interquartil)
-- Calcula Q1, Q3, IQR
-- Marca outliers: valor < Q1 - 1.5×IQR OU valor > Q3 + 1.5×IQR
-- Cria coluna `eh_outlier` (True/False)
-- Outliers mantidos (não removidos — importante!)
-
-#### Seção 9: Validação de Dados
-- Verifica se há valores negativos (impossível)
-- Verifica se há valores absurdamente grandes (erro de entrada)
-- Gera relatório de dados suspeitos
-
-#### Seção 10: Criação de Indicadores
-- Coluna `processado_em_02` = True (rastreabilidade)
-- Data e hora do processamento
-
-#### Seção 11: Salvamento
-- Arquivo: `dados_processados/dados_limpos.csv`
-- Formato: UTF-8, separador `;`
-- Linhas: 876.238 (876.248 - 10 removidas)
+#### Seção 9: Resumo e salvamento
+- Salva `dados_processados/dados_limpos.csv` em UTF-8, separado por `;`.
+- O arquivo atual contém 876.243 registros e 34 colunas (32 originais + 2 auxiliares).
 
 ### Arquivos de Saída
 
 | Arquivo | Linhas | Tamanho | Descrição |
 |---------|--------|---------|-----------|
-| `dados_processados/dados_limpos.csv` | 876.238 | ~209 MB | População limpa e preparada |
+| `dados_processados/dados_limpos.csv` | 876.243 | ~209 MB | População limpa e preparada |
 | Log terminal | - | - | Relatório de processamento |
 
 ### Estatísticas de Qualidade
@@ -152,8 +117,8 @@ Reclassificação de valores inconsistentes:
 ```
 Registros lidos:        876.248
 Duplicatas removidas:   5
-Linhas vazias removidas: 5
-Registros finais:       876.238
+Linhas vazias removidas: 0
+Registros finais:       876.243
 
 Percentual mantido: 99,99%
 ```
@@ -182,17 +147,21 @@ Onde:
 - `z` = 1,96 (valor crítico para 95% de confiança)
 - `p` = 0,50 (proporção conservadora)
 - `E` = 0,03 (margem de erro de 3%)
-- `N` = 876.238 (população)
+- `N` = 876.243 (registros da população processada atual)
+
+**Importante:** `p = 0,50` é usado somente no dimensionamento da amostra
+porque maximiza a variância de uma proporção quando ela é desconhecida. Não é
+a hipótese nula do teste de apartamentos; no teste H1, o script usa
+`H₀: p = 0,40`.
 
 #### Cálculo:
 
 ```
-Numerador: 1,96² × 0,5 × 0,5 × 876.238 = 4.193.146,5
-Denominador: 0,03² × (876.238-1) + 1,96² × 0,5 × 0,5 = 825,96 + 0,96 = 826,92
+Numerador: 1,96² × 0,5 × 0,5 × 876.243 ≈ 841.543,78
+Denominador: 0,03² × (876.243-1) + 1,96² × 0,5 × 0,5 ≈ 789,58
 
-n = 4.193.146,5 / 826,92 ≈ 5.073
-
-(Com ajuste: 1.066)
+n ≈ 841.543,78 / 789,58 ≈ 1.065,81
+Arredondando para cima: 1.066 registros
 ```
 
 **Resultado: Amostra de ~1.066 registros**
@@ -200,7 +169,7 @@ n = 4.193.146,5 / 826,92 ≈ 5.073
 #### Nível de Confiança
 - **Confiança:** 95% (z=1,96)
 - **Margem de Erro:** ±3%
-- **Interpretação:** Se repetíssemos amostragem 100 vezes, 95 vezes os resultados estariam dentro de ±3% do verdadeiro valor populacional
+- A margem de erro de 3 pontos percentuais se refere ao dimensionamento de proporções sob as premissas da fórmula, não é uma garantia para qualquer média ou variável.
 
 ### Implementação
 
@@ -213,20 +182,16 @@ n = 4.193.146,5 / 826,92 ≈ 5.073
 - Exibe cálculo passo a passo
 
 #### Seção 3: Reprodutibilidade
-- Usa `random_state=42`
+- Inicializa o gerador NumPy com `np.random.seed(42)`.
 - Garante mesmo resultado em múltiplas execuções
 - Importante para documentação e revisão
 
-#### Seção 4: Ordenação (Opcional)
-- Ordena população por chave sequencial
-- Não afeta resultados (apenas para auditoria)
-
-#### Seção 5: Amostragem
-- `sample()` do pandas com `replace=False`
+#### Seção 4: Amostragem
+- Usa `numpy.random.choice` com `replace=False`.
 - Amostragem aleatória simples SEM reposição
 - Seleciona exatamente n=1.066 registros
 
-#### Seção 6: Salvamento
+#### Seção 5: Salvamento
 - Arquivo principal: `dados_processados/amostra.csv`
 - Arquivo auxiliar: `dados_processados/amostra_indices.csv`
 - Arquivo integrado: `dados_processados/dados_com_indicador_amostra.csv`
@@ -236,15 +201,15 @@ n = 4.193.146,5 / 826,92 ≈ 5.073
 | Arquivo | Linhas | Propósito |
 |---------|--------|-----------|
 | `dados_processados/amostra.csv` | 1.066 | Amostra final |
-| `dados_processados/amostra_indices.csv` | 1.066 | IDs dos registros sorteados |
-| `dados_processados/dados_com_indicador_amostra.csv` | 876.238 | População com marca de amostra |
+| `dados_processados/amostra_indices.csv` | 1.066 | Índices de linha sorteados |
+| `dados_processados/dados_com_indicador_amostra.csv` | 876.243 | População com marca de amostra |
 
 ### Estatísticas
 
 ```
-População total:        876.238 registros
+População total:        876.243 registros
 Amostra sorteada:       1.066 registros
-Taxa de amostragem:     0,12%
+Taxa de amostragem:     0,1217%
 Método:                 AAS (sem reposição)
 Semente aleatória:      42
 ```
@@ -281,11 +246,9 @@ Para cada variável contínua:
 Tendência Central:
   • Média (μ)
   • Mediana
-  • Moda
 
 Dispersão:
   • Desvio padrão (σ)
-  • Variância (σ²)
   • Coeficiente de variação (CV = σ/μ × 100%)
 
 Posição:
@@ -297,76 +260,52 @@ Posição:
 
 Distribuição:
   • Intervalo (máximo - mínimo)
-  • IQR (Q3 - Q1)
-  • Assimetria (skewness)
-  • Curtose (kurtosis)
 ```
+
+O script também apresenta Q1 e Q3 separadamente. Não calcula moda, variância,
+assimetria ou curtose.
 
 ### Implementação
 
 #### Seção 1: Carregamento
-- Lê `dados_processados/dados_limpos.csv` (população)
-- Lê `dados_processados/amostra.csv` (amostra)
+- Lê `dados_processados/dados_com_indicador_amostra.csv`
+- Separa a população e a amostra pela coluna `em_amostra`
 
 #### Seção 2: Definição de Variáveis
 - Lista explícita de variáveis a analisar
 - Separa contínuas de categóricas
 
 #### Seção 3: Estatísticas da População
-- Calcula para todos os 876.238 registros
-- Usa `.describe()` do pandas
-- Calcula medidas adicionais (skewness, kurtosis)
+- Calcula as medidas para os 876.243 registros processados atuais
+- Compara os resultados com os casos válidos da amostra
 
 #### Seção 4: Estatísticas da Amostra
-- Calcula para os 1.066 registros da amostra
-- Mesmas medidas da população
-- Permite comparação
+- Calcula as mesmas medidas para os 1.066 registros sorteados
 
-#### Seção 5: Frequências da População
-- Conta ocorrências de cada categoria
-- Calcula percentual
-- Ordena por frequência descendente
-
-#### Seção 6: Frequências da Amostra
-- Mesma análise para amostra
-- Permite validar representatividade
-
-#### Seção 7: Comparação
-- Tabelas lado-a-lado
-- População vs. Amostra
-- Identifica diferenças (se houver)
-
-#### Seção 8: Salvamento
-- 8 arquivos CSV em `saidas/`
+#### Frequências e comparação
+- Conta frequências e calcula percentuais para as quatro variáveis categóricas.
+- Cada arquivo compara população e amostra lado a lado; as ausências aparecem como categoria.
 
 ### Arquivos de Saída (8 arquivos)
 
 ```
 saidas/
-├── desc_populacao.csv         # Estatísticas população (contínuas)
-├── desc_amostra.csv           # Estatísticas amostra (contínuas)
-├── freq_finalidade_pop.csv    # Frequências de finalidade (população)
-├── freq_finalidade_amostra.csv
-├── freq_uso_pop.csv           # Frequências de uso (população)
-├── freq_uso_amostra.csv
-├── freq_bairro_pop.csv        # Frequências de bairro (população)
-└── freq_bairro_amostra.csv
+├── desc_vlr_venal_imovel.csv
+├── desc_mtr_area_construida_total.csv
+├── desc_vlr_imposto.csv
+├── desc_vlr_aliquota.csv
+├── freq_des_finalidade.csv
+├── freq_des_uso.csv
+├── freq_nme_endloc_bairro_cdl.csv
+└── freq_num_divisao_fiscal.csv
 ```
 
-### Exemplo de Saída
+Cada arquivo `desc_*.csv` contém as linhas `Media`, `Mediana`,
+`Desvio-Padrao`, `Minimo`, `Q1`, `Q3`, `Maximo`, `Amplitude` e `CV`, com as
+colunas `Estatística`, `População`, `Amostra` e `Diferença (%)`. Cada arquivo
+`freq_*.csv` compara categoria, frequência e percentual dos dois grupos.
 
-**desc_populacao.csv:**
-```
-estatistica,vlr_venal_imovel,mtr_area_construida_total,vlr_imposto,vlr_aliquota
-count,876238.0,852181.0,876238.0,876238.0
-mean,387234.56,145.32,1243.21,0.32
-median,158642.00,120.00,625.00,0.30
-std,892156.43,95.21,2156.43,0.08
-min,50000.00,20.00,50.00,0.10
-25%,125000.00,80.00,400.00,0.25
-75%,425000.00,180.00,1200.00,0.35
-max,45000000.00,5000.00,125000.00,1.50
-```
+O script grava esses arquivos como CSV separado por vírgula e sem índice.
 
 ---
 
@@ -383,8 +322,8 @@ Testar hipóteses e calcular intervalos de confiança baseados na amostra.
 #### Teste H1: Proporção de Apartamentos
 
 **Hipótese:**
-- H₀: Proporção de apartamentos = 50%
-- H₁: Proporção de apartamentos ≠ 50%
+- H₀: Proporção de apartamentos = 40%
+- H₁: Proporção de apartamentos ≠ 40%
 
 **Método:** Teste Z para proporções
 
@@ -399,7 +338,7 @@ Onde:
 ```
 
 **Interpretação:**
-- Se Z calculado > Z crítico (±1,96): rejeita H₀
+- Para o teste bilateral, rejeita-se H₀ se |Z| > 1,96 (equivalentemente, se o valor-p < 0,05).
 - Nível de significância: α = 0,05
 
 ---
@@ -407,8 +346,8 @@ Onde:
 #### Teste H2: Proporção de Uso Residencial
 
 **Hipótese:**
-- H₀: Proporção de imóveis residenciais = 70%
-- H₁: Proporção de imóveis residenciais ≠ 70%
+- H₀: Proporção de imóveis residenciais = 85%
+- H₁: Proporção de imóveis residenciais ≠ 85%
 
 **Método:** Teste Z para proporções
 
@@ -437,7 +376,7 @@ Onde:
 ```
 
 **Interpretação:**
-- Compara com t crítico de Student (gl = 1.065)
+- Compara com o valor crítico da distribuição t de Student, usando `n - 1` graus de liberdade da amostra válida.
 - Nível de significância: α = 0,05
 
 ---
@@ -445,8 +384,8 @@ Onde:
 #### Teste H4: Média da Área Construída
 
 **Hipótese:**
-- H₀: Média da área construída = 150 m²
-- H₁: Média da área construída ≠ 150 m²
+- H₀: Média da área construída = 100 m²
+- H₁: Média da área construída ≠ 100 m²
 
 **Método:** Teste t de Student
 
@@ -457,38 +396,29 @@ Onde:
 ### Implementação
 
 #### Seção 1: Carregamento
-- População: `dados_processados/dados_limpos.csv`
-- Amostra: `dados_processados/amostra.csv`
+- Lê `dados_processados/dados_com_indicador_amostra.csv`
+- Usa a coluna `em_amostra` para separar população e amostra
 
 #### Seção 2: Preparação
-- Remove valores NaN para análise
+- Remove ausências variável a variável para calcular estatísticas
 - Identifica variáveis-alvo
 - Define parâmetros de teste
 
 #### Seção 3: Parâmetros
 - α (nível de significância) = 0,05
 - z crítico (bilateral) = 1,96
-- t crítico (bilateral, gl=1065) ≈ 1,96
+- O valor crítico t é calculado pela distribuição t, com `n - 1` graus de liberdade para cada variável
 
-#### Seção 4: Teste H1
+#### Seções 3–6: Testes H1–H4
 - Calcula proporção de apartamentos
 - Realiza teste Z
-- Calcula IC 95%
-
-#### Seção 5: Teste H2
 - Calcula proporção residencial
 - Realiza teste Z
-- Calcula IC 95%
-
-#### Seção 6: Teste H3
 - Calcula média venal
 - Realiza teste t
-- Calcula IC 95%
-
-#### Seção 7: Teste H4
 - Calcula média área
 - Realiza teste t
-- Calcula IC 95%
+- Calcula intervalo de confiança de 95% para cada parâmetro
 
 #### Seção 8: Resumo
 - Consolida todos os resultados
@@ -501,16 +431,33 @@ saidas/
 └── testes_hipoteses.csv   # Resultado consolidado de todos os 4 testes
 ```
 
-### Exemplo de Saída
+### Formato da Saída
 
-**testes_hipoteses.csv:**
+**`saidas/testes_hipoteses.csv`** contém:
 ```
-teste,hipotese_nula,hipotese_alternativa,parametro_amostral,estatistica_teste,valor_critico,p_valor,rejeita_h0,ic_inferior,ic_superior,conclusao
-H1,p=0.50,p≠0.50,0.545,2.95,1.96,0.0032,Sim,0.515,0.575,"Proporção é diferente de 50%"
-H2,p=0.70,p≠0.70,0.682,1.87,1.96,0.0616,Não,0.653,0.711,"Não há diferença significativa"
-H3,μ=400000,μ≠400000,387234,1.45,1.96,0.1472,Não,358000,416468,"Não há diferença significativa"
-H4,μ=150,μ≠150,145.32,3.21,1.96,0.0013,Sim,142.5,148.1,"Média é diferente de 150 m²"
+Hipótese,Estatística,Valor-p,Decisão
+"H1: p_Apartamento = 0,40",0.7252,0.468313,Não rejeitar H₀
+"H2: p_Residencial = 0,85",13.5212,0.000000,Rejeitar H₀
+"H3: μ_Valor = 400k",-3.2121,0.001357,Rejeitar H₀
+"H4: μ_Área = 100",0.9040,0.366187,Não rejeitar H₀
 ```
+
+O valor-p de H2 aparece como `0.000000` porque a saída CSV o arredonda a seis
+casas decimais. A tabela contém somente estatística, valor-p e decisão; os
+intervalos de confiança e conclusões detalhadas são exibidos no terminal.
+
+### Resultados da execução mais recente
+
+| Hipótese | n válido na amostra | Estatística | Valor-p | Decisão (α = 0,05) |
+|----------|---------------------:|------------:|--------:|--------------------|
+| H1: apartamentos, p₀ = 0,40 | 1.066 | z = 0,7252 | 0,468313 | Não rejeitar H₀ |
+| H2: uso residencial, p₀ = 0,85 | 1.036 | z = 13,5212 | < 0,000001 | Rejeitar H₀ |
+| H3: valor venal, μ₀ = R$ 400.000 | 1.066 | t = -3,2121 | 0,001357 | Rejeitar H₀ |
+| H4: área construída, μ₀ = 100 m² | 1.036 | t = 0,9040 | 0,366187 | Não rejeitar H₀ |
+
+O CSV arredonda o valor-p de H2 para `0.000000` com seis casas decimais; isso
+é arredondamento de exibição, não um valor-p igual a zero. Os denominadores
+variam por hipótese porque os testes usam casos válidos para cada variável.
 
 ### Interpretação dos Resultados
 
@@ -519,9 +466,9 @@ H4,μ=150,μ≠150,145.32,3.21,1.96,0.0013,Sim,142.5,148.1,"Média é diferente 
 - Se p-valor ≥ 0,05: resultado não significante ✗
 
 #### Intervalo de Confiança (IC)
-- Se H₀ está DENTRO do IC: não rejeita H₀
-- Se H₀ está FORA do IC: rejeita H₀
-- IC representa range de 95% confiança
+- Nos testes t, o IC e o teste usam o mesmo erro padrão e distribuição; a inclusão do valor hipotético tende a corresponder à decisão do teste, salvo arredondamento.
+- Para proporções, o teste Z usa erro padrão calculado sob H₀, enquanto o IC usa a proporção observada. Por isso, decisões baseadas no IC de Wald podem não coincidir exatamente com as do teste; use o valor-p para a decisão formal.
+- O IC de 95% descreve uma faixa estimada para o parâmetro populacional.
 
 #### Conclusão
 - **Rejeita H₀:** evidência suficiente contra a hipótese nula
@@ -550,41 +497,18 @@ TrabalhoFinal/
 │   └── dados_com_indicador_amostra.csv
 │
 ├── saidas/
-│   ├── desc_populacao.csv
-│   ├── desc_amostra.csv
-│   ├── freq_*.csv                  # 6 arquivos de frequência
-│   └── testes_hipoteses.csv        # Resultado final
+│   ├── desc_<variável>.csv         # 4 comparações quantitativas
+│   ├── freq_<variável>.csv         # 4 comparações categóricas
+│   └── testes_hipoteses.csv        # 4 testes resumidos
 │
-└── docs/
-    ├── 00_LEIA_PRIMEIRO.md         # Começar aqui
-    ├── 01_GUIA_PASSO_A_PASSO.md    # Como executar
-    ├── 02_REFERENCIA_TECNICA.md    # Este arquivo
-    └── 99_CONTEXT_PARA_AGENTES.md  # Para IA/LLMs
+├── 00_LEIA_PRIMEIRO.md             # Entrada para humanos
+├── 01_GUIA_PASSO_A_PASSO.md        # Como executar
+├── 02_REFERENCIA_TECNICA.md        # Detalhes técnicos
+└── 99_CONTEXT_PARA_AGENTES.md      # Contexto para IA/LLMs
 ```
 
----
-
-## 🔬 Estatísticas Esperadas (Estimativas)
-
-Com base na exploração inicial (script 01):
-
-### Variáveis Contínuas
-
-| Variável | Média | Mediana | σ | Mínimo | Máximo |
-|----------|-------|---------|---|--------|--------|
-| Valor Venal | ~R$ 387k | ~R$ 159k | ~R$ 892k | R$ 50k | R$ 45M |
-| Área Construída | ~145 m² | ~120 m² | ~95 m² | 20 m² | 5.000 m² |
-| Valor IPTU | ~R$ 1.243 | ~R$ 625 | ~R$ 2.156 | R$ 50 | R$ 125k |
-| Alíquota | ~0,32% | ~0,30% | ~0,08% | 0,10% | 1,50% |
-
-### Variáveis Categóricas
-
-| Categoria | Top 3 |
-|-----------|-------|
-| Finalidade | Residencial (~75%), Comercial (~15%), Outros (~10%) |
-| Uso | Apartamento (~45%), Casa (~35%), Loja (~10%), Outros (~10%) |
-| Bairro | Centro, Moinhos de Vento, Bom Fim, etc. |
-| Divisão Fiscal | 5 zonas (distribuição variável) |
+Os resultados observados devem ser consultados nos CSVs gerados; valores
+preenchidos como previsões ou exemplos não são resultados do pipeline.
 
 ---
 
@@ -610,17 +534,22 @@ pip install -r requirements.txt
 ### Codificação
 - Arquivo: UTF-8
 - Separador: `;` (ponto-e-vírgula)
-- Decimal: `,` (vírgula)
+- Decimal na fonte: `,` (vírgula); script 02 normaliza para ponto nas variáveis quantitativas.
+
+Os CSVs dos scripts 02 e 03 usam `;`; os CSVs dos scripts 04 e 05 usam a vírgula
+separadora padrão do pandas. Os scripts 02–05 gravam sem índice; os arquivos
+produzidos pelo script 01 usam o padrão do pandas, que inclui índice em
+`01_descritivas_populacao.csv`.
 
 ### Dados Faltantes
 - Mantidos como NaN (não removidos)
 - Importante para análise de qualidade
-- Scripts tratam automaticamente
+- Cada cálculo usa os casos válidos da variável analisada
 
 ### Outliers
-- Detectados com IQR
+- Identificados e quantificados no terminal pelo critério IQR
 - Mantidos na análise
-- Marcados com indicador
+- Não recebem coluna indicadora específica
 
 ### Reprodutibilidade
 - Seed: 42
@@ -632,12 +561,12 @@ pip install -r requirements.txt
 ## 📊 Resumo do Pipeline
 
 ```
-iptu_2026.csv (876.248)
+iptu_2026.csv (876.248 registros, 32 colunas)
          ↓
     [SCRIPT 02]
-    Limpeza
+    Remove 5 duplicatas
          ↓
-dados_limpos.csv (876.238)
+dados_limpos.csv (876.243 registros, 34 colunas)
          ↓
     [SCRIPT 03]
     Amostragem AAS
@@ -710,7 +639,7 @@ Todos os scripts seguem:
 
 ---
 
-**Última atualização:** 2024  
+**Última atualização:** 12/11/2026
 **Versão:** 1.0  
 **Status:** Pronto para produção ✓
 

@@ -163,7 +163,9 @@ for col in variaveis_categoricas:
     if col in df.columns:
         # Texto padronizado facilita comparar categorias e remover diferenças
         # causadas por espaços antes/depois dos nomes.
-        df[col] = df[col].astype(str).str.strip()
+        # O dtype "string" preserva ausências como <NA>; `str` converteria NaN
+        # para o texto literal "nan" e prejudicaria a contagem de campos vazios.
+        df[col] = df[col].astype("string").str.strip()
         print(f"  ✓ {col}")
 
 # ============================================================================
@@ -324,7 +326,7 @@ Linhas removidas:        {linhas_removidas:>12,}
   └─ Linhas duplicadas:  {duplicatas_antes:>12}
 
 Linhas finais:           {linhas_finais:>12,}
-Percentual mantido:      {100*linhas_finais/linhas_iniciais:>11.2f}%
+Percentual mantido:      {100*linhas_finais/linhas_iniciais:>11.4f}%
 
 Colunas:                 {colunas:>12}
 
@@ -398,7 +400,8 @@ PRÓXIMA ETAPA:
 
 IMPORTANTE:
   Os dados agora estão prontos para amostragem e análise!
-  Nenhum dado foi "descartado", apenas reorganizado e validado.
+  {linhas_vazias:,} linhas totalmente vazias e {duplicatas_antes:,} duplicatas foram removidas.
+  Os demais registros foram preservados; valores inválidos numéricos foram tratados como ausentes.
 
 """)
 print("=" * 80)

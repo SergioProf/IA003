@@ -1,7 +1,7 @@
 # 🎯 LEIA PRIMEIRO — Guia de Início Rápido
 
 **Tempo de leitura:** 3 minutos  
-**Status:** ✅ Tudo pronto para executar
+**Status:** Pipeline 02–05 executado com o código atual | ⬜ Painéis e vídeo pendentes
 
 ---
 
@@ -11,8 +11,8 @@
    - 1 para exploração (já feito)
    - 4 novos para análise completa
 
-2. **Tempo total: 10-15 minutos**
-   - Muito rápido para executar
+2. **Scripts 02–05: aproximadamente 10-15 minutos**
+   - Esta estimativa cobre apenas o pipeline de análise, não os painéis nem o vídeo
 
 3. **Seguir a sequência: 02 → 03 → 04 → 05**
    - Cada script depende do anterior
@@ -39,7 +39,10 @@ python scripts/04_analise_descritiva.py
 python scripts/05_inferencia_estatistica.py
 ```
 
-**Pronto! Tudo feito em 10-15 minutos.**
+Os scripts geram os arquivos de preparação, amostra e análise. Os scripts
+02–05 foram executados após os ajustes recentes e os CSVs foram atualizados.
+Os painéis interativos e o vídeo exigidos no enunciado ainda precisam ser
+produzidos.
 
 ---
 
@@ -69,10 +72,11 @@ python scripts/05_inferencia_estatistica.py
 
 ## 📊 Dados Processados
 
-- **População:** 876.248 imóveis
+- **Base original:** 876.248 registros, 32 colunas
+- **População analítica após remover 5 duplicatas:** 876.243 registros
 - **Amostra:** 1.066 registros
 - **Testes:** 4 hipóteses
-- **Saídas:** 12 arquivos CSV
+- **Saídas analíticas:** 8 CSVs descritivos + 1 CSV de testes
 
 ---
 
@@ -88,17 +92,22 @@ dados_processados/
 └── dados_com_indicador_amostra.csv
 
 saidas/
-├── desc_*.csv (4 arquivos)
-├── freq_*.csv (4 arquivos)
+├── desc_<variável>.csv (4 arquivos comparando população e amostra)
+├── freq_<variável>.csv (4 arquivos comparando população e amostra)
 └── testes_hipoteses.csv
 ```
+
+Os 13 arquivos CSV citados neste bloco correspondem a 4 arquivos
+intermediários em `dados_processados/` e 9 resultados em `saidas/`, gerados
+pela execução mais recente do pipeline.
 
 ---
 
 ## ❓ Perguntas Rápidas
 
 **P: Quanto tempo leva?**  
-R: 10-15 minutos de execução total
+R: A execução dos scripts 02–05 é estimada em 10-15 minutos. Painéis e vídeo
+exigidos no enunciado são etapas separadas e continuam pendentes.
 
 **P: Posso executar um de cada vez?**  
 R: Sim! Mas devem ser na ordem 02 → 03 → 04 → 05
@@ -107,7 +116,7 @@ R: Sim! Mas devem ser na ordem 02 → 03 → 04 → 05
 R: Leia a mensagem de erro. Provavelmente falta instalar dependências
 
 **P: Onde encontro ajuda?**  
-R: Veja `01_GUIA_PASSO_A_PASSO.md` seção "Se algo der errado"
+R: Veja `01_GUIA_PASSO_A_PASSO.md`, seção "Se Algo Der Errado".
 
 ---
 

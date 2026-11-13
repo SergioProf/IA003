@@ -11,14 +11,17 @@ Este documento explica os principais conceitos usados no script de exploração 
 ### População
 **Definição simples:** Todos os itens que você quer estudar.
 
-**No nosso caso:** Todos os 876.248 imóveis de Porto Alegre
+**No nosso caso:** O arquivo original tem 876.248 registros. Após remover
+5 duplicatas exatas, a população analítica usada pelos scripts 02–05 tem
+876.243 registros.
 
 **Analogia:** Se você quer saber a altura média dos brasileiros, a "população" seria TODOS os brasileiros.
 
 ### Amostra
 **Definição simples:** Um grupo pequeno tirado da população para representá-la.
 
-**No nosso caso:** Vamos selecionar ~1.066 imóveis (aproximadamente 0,12% do total)
+**No nosso caso:** Foram selecionados 1.066 registros da população analítica
+(aproximadamente 0,12% de 876.243).
 
 **Analogia:** Em vez de medir TODOS os brasileiros (impossível), você mede 1.000 pessoas bem espalhadas pelo país.
 
@@ -201,12 +204,12 @@ Procurar por duplicatas e remover as cópias.
 ### Frequência
 **Definição:** Quantas vezes algo aparece.
 
-**Exemplo:**
+**Exemplo genérico:**
 ```
-Apartamentos: 350.000
-Casas: 400.000
-Salões: 126.248
-Total: 876.248
+Categoria A: 3
+Categoria B: 5
+Categoria C: 2
+Total: 10
 ```
 
 ### Proporção
@@ -214,11 +217,11 @@ Total: 876.248
 
 **Fórmula:** Proporção = Frequência ÷ Total
 
-**Exemplo:**
+**Exemplo genérico:**
 ```
-Apartamentos: 350.000 ÷ 876.248 = 0,40 = 40%
-Casas: 400.000 ÷ 876.248 = 0,46 = 46%
-Salões: 126.248 ÷ 876.248 = 0,14 = 14%
+Categoria A: 3 ÷ 10 = 0,30 = 30%
+Categoria B: 5 ÷ 10 = 0,50 = 50%
+Categoria C: 2 ÷ 10 = 0,20 = 20%
 Total: 100%
 ```
 
@@ -235,20 +238,23 @@ Total: 100%
 
 ### Como Testamos?
 **Processo:**
-1. Formulamos a hipótese (H₀ = nula, o que queremos desmentir)
+1. Formulamos a hipótese nula (H₀) e a alternativa (H₁)
 2. Coletamos dados (de uma amostra)
 3. Calculamos uma estatística de teste
 4. Comparamos com um valor crítico
-5. Decidimos se rejeitamos ou aceitamos a hipótese
+5. Decidimos se rejeitamos ou não rejeitamos H₀
 
-**Analogia:** É como um julgamento. H₀ é o réu "inocente". Você testa a evidência para decidir se culpa (rejeita H₀) ou não (aceita H₀).
+**Analogia:** É como um julgamento. A evidência pode levar à rejeição de H₀,
+mas não rejeitar H₀ não prova que ela seja verdadeira.
 
 ---
 
 ## 8️⃣ INTERVALOS DE CONFIANÇA (Preview)
 
 ### O Que É?
-**Definição:** Um "intervalo" (faixa de valores) onde o verdadeiro valor provavelmente está.
+**Definição:** Um intervalo calculado por um método que, em amostragens
+repetidas, contém o parâmetro verdadeiro na proporção de vezes indicada pelo
+nível de confiança, sob os pressupostos do método.
 
 **Exemplo:**
 ```
@@ -257,40 +263,43 @@ Amostra de 100 imóveis tem valor médio: R$ 250.000
 Intervalo de confiança de 95%: 
 Entre R$ 200.000 e R$ 300.000
 
-Significado: Temos 95% de certeza que o verdadeiro valor 
-médio (de TODOS os imóveis) está nessa faixa.
+Interpretação: o método de 95% de confiança produz intervalos que conteriam
+o verdadeiro valor médio em cerca de 95% das amostragens repetidas.
 ```
 
 **Por que não só um número?**
 - Quando trabalha com amostra, há incerteza
 - Precisamos de um "intervalo de segurança"
-- Quanto maior o intervalo, mais confiante você fica
+- Um intervalo mais amplo pode ter maior cobertura, mas é menos preciso
 
 ---
 
 ## 9️⃣ NÍVEL DE SIGNIFICÂNCIA (α)
 
 ### O Que É?
-**Definição:** A probabilidade máxima de você estar ERRADO ao rejeitar uma hipótese.
+**Definição:** Limite escolhido para a probabilidade de erro tipo I: rejeitar
+H₀ quando H₀ é verdadeira, a longo prazo e sob os pressupostos do teste.
 
 **No nosso caso:** Usaremos α = 0,05 (5%)
 
 **Interpretação:**
-- Se α = 5%, você está disposto a errar 5% das vezes
-- Ou: você quer 95% de certeza antes de fazer uma afirmação
+- α = 5% é o critério usado para decidir se o resultado é estatisticamente
+  significativo; não é a probabilidade de H₀ ser verdadeira ou falsa.
 
-**Analogia:** Antes de condenar alguém, você quer 95% de certeza (não 100%, que é impossível).
+**Nota:** α = 0,05 não significa que há 95% de chance de a conclusão específica estar correta.
 
 ---
 
 ## 🔟 P-VALOR
 
 ### O Que É?
-**Definição:** A probabilidade de você estar errado se rejeitar a hipótese nula.
+**Definição:** Supondo que H₀ seja verdadeira, é a probabilidade de obter uma
+estatística de teste tão extrema quanto a observada, ou mais extrema, segundo
+a alternativa considerada.
 
 **Interpretação simples:**
 - p-valor < 0,05: você rejeita H₀ (resultado significativo)
-- p-valor > 0,05: você não rejeita H₀ (resultado não significativo)
+- p-valor ≥ 0,05: você não rejeita H₀ (resultado não significativo)
 
 **Exemplo:**
 ```
@@ -298,8 +307,9 @@ Teste de hipótese:
   H₀: "40% dos imóveis são apartamentos"
   Resultado: p-valor = 0,02
   
-  Interpretação: Há apenas 2% de chance de estar errado
-  → Você rejeita H₀ (40% é provavelmente errado)
+  Interpretação: se H₀ fosse verdadeira, um resultado tão extremo quanto esse
+  teria probabilidade de 2% segundo o teste.
+  → Como 0,02 < 0,05, rejeitamos H₀ ao nível de 5%.
 ```
 
 ---
@@ -318,18 +328,19 @@ Teste de hipótese:
 | **Amostra** | Grupo pequeno que representa o total |
 | **Teste de Hipótese** | Verificar se uma suposição é verdadeira |
 | **Intervalo de Confiança** | Faixa onde o valor provavelmente está |
-| **p-valor** | Probabilidade de estar errado |
+| **p-valor** | Probabilidade dos dados (ou de resultado mais extremo) sob H₀ |
 
 ---
 
 ## Perguntas Frequentes
 
-### P: Por que não analisar TODOS os 876.248 imóveis em vez de só 1.066?
+### P: Por que não analisar todos os 876.243 registros em vez de só 1.066?
 
 **R:** 
 - Analisar todos é mais lento (computador gasta mais tempo)
 - Uma amostra BEM ESCOLHIDA representa a população
-- Com ~1.066 imóveis, nossa análise será 99% tão precisa quanto com todos
+- A amostra reduz o custo de processamento, mas suas estimativas têm incerteza
+  amostral; a precisão depende da variável, dos dados válidos e do método.
 - Economizamos tempo e recursos
 
 ### P: E se minha amostra for "enviesada" (não representar bem)?

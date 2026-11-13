@@ -22,7 +22,8 @@ O QUE ESTE SCRIPT FAZ:
 PARA QUEM NÃO SABE ESTATÍSTICA:
   - "Hipótese" = suposição que você quer testar
   - "Teste de hipótese" = procedimento para verificar se está certa
-  - "Valor-p (p-value)" = probabilidade de estar errado
+  - "Valor-p (p-value)" = probabilidade, supondo H₀, de observar um resultado
+    tão extremo quanto o obtido ou ainda mais extremo
   - "Intervalo de confiança" = "margem de segurança" para estimativas
   - "Nível de significância (α)" = quanto de risco você aceita (5%)
 
@@ -94,7 +95,7 @@ PARÂMETROS DE TESTE:
     Se valor-p < 0,05 → rejeitar H₀ (hipótese nula)
     Se valor-p ≥ 0,05 → não rejeitar H₀
     
-  Isso significa: estamos dispostos a aceitar 5% de risco de erro.
+  α controla a taxa de erro tipo I de longo prazo se H₀ for verdadeira.
 
 TIPO DE TESTE:
   Bilateral (two-tailed)

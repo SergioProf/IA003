@@ -1,5 +1,17 @@
 # 📊 Trabalho Final — Estatística IA003
 
+> **Documento de contexto inicial (histórico).** O status, a estrutura de
+> arquivos e as próximas ações abaixo foram registrados antes da execução do
+> pipeline. Para instruções e resultados atuais, siga esta ordem:
+> [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md) →
+> [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md) →
+> [02_REFERENCIA_TECNICA.md](./02_REFERENCIA_TECNICA.md).
+> Painéis, vídeo e links de entrega ainda estão pendentes conforme o
+> [Enunciado.txt](./Enunciado.txt).
+> As instruções de execução neste documento são históricas; para os comandos
+> atuais e a regeneração dos CSVs, use
+> [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md).
+
 ## Análise de Amostragem, Intervalos de Confiança e Testes de Hipóteses  
 ### IPTU 2026 — Porto Alegre
 
@@ -13,31 +25,14 @@ Aplicar conceitos de **amostragem**, **estimação por intervalos de confiança*
 
 ## 📋 Documentação
 
-### 📌 Comece por aqui
-1. **[GUIA_RAPIDO.md](./GUIA_RAPIDO.md)** ← Leia primeiro (5 min)
-   - Resumo de tudo em uma página
-   - Próximos passos
-   - Timeline
+### Documentação atual
+1. [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md) — ponto inicial e status atual
+2. [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md) — execução dos scripts
+3. [02_REFERENCIA_TECNICA.md](./02_REFERENCIA_TECNICA.md) — implementação e artefatos
+4. [99_CONTEXT_PARA_AGENTES.md](./99_CONTEXT_PARA_AGENTES.md) — contexto estruturado para IA
 
-2. **[00_SUMARIO_EXECUTIVO.md](./00_SUMARIO_EXECUTIVO.md)** ← Contexto completo
-   - Validação dos dados
-   - Análise de ausências
-   - Dimensionamento da amostra
-   - Hipóteses confirmadas
-
-### 📚 Referência Detalhada
-3. **[ANALISE_INICIAL.md](./ANALISE_INICIAL.md)** ← Análise profunda
-   - Especificação da tarefa
-   - Base de dados detalhada
-   - Plano de execução completo
-   - Todas as etapas descritas
-
-4. **[AMBIENTE_TRABALHO.md](./AMBIENTE_TRABALHO.md)** ← Guia técnico
-   - Estrutura de pastas
-   - Dependências Python
-   - Instruções de execução
-   - Cronograma detalhado
-   - Checklist de validação
+Consulte também [README_ESTRUTURA.md](./README_ESTRUTURA.md) para o mapa de
+leitura e [GLOSSARIO_ESTATISTICO.md](./GLOSSARIO_ESTATISTICO.md) para conceitos.
 
 ---
 
@@ -62,15 +57,15 @@ Etapa G: Vídeo e Entrega               ⬜ PENDENTE
 pip install -r requirements.txt
 ```
 
-### Executar próxima etapa
+### Reexecutar o pipeline (se necessário)
 ```bash
 python scripts/02_preparacao_dados.py
+python scripts/03_amostragem.py
+python scripts/04_analise_descritiva.py
+python scripts/05_inferencia_estatistica.py
 ```
 
-### Abrir painéis (depois de tudo)
-```bash
-streamlit run paineis/app_streamlit.py
-```
+Os painéis ainda não foram implementados; não há comando para abri-los.
 
 ---
 
@@ -109,12 +104,18 @@ n = 1.066 registros (95% confiança, 3% erro)
 TrabalhoFinal/
 │
 ├── 📄 Documentação
-│   ├── 00_README.md                    ← Este arquivo
-│   ├── GUIA_RAPIDO.md                  ← Resumo em 1 página
-│   ├── 00_SUMARIO_EXECUTIVO.md         ← Análise executiva
-│   ├── ANALISE_INICIAL.md              ← Análise completa
-│   ├── AMBIENTE_TRABALHO.md            ← Guia técnico
-│   └── roadmap.md                      ← Plano original (disciplina)
+│   ├── 00_README.md                    ← Este registro histórico
+│   ├── 00_LEIA_PRIMEIRO.md             ← Entrada humana
+│   ├── 01_GUIA_PASSO_A_PASSO.md        ← Execução
+│   ├── 02_REFERENCIA_TECNICA.md        ← Referência técnica
+│   ├── 99_CONTEXT_PARA_AGENTES.md     ← Contexto para agentes
+│   ├── GLOSSARIO_ESTATISTICO.md        ← Conceitos
+│   ├── REFERENCIA_RAPIDA.md            ← Fatos e atalhos atuais
+│   ├── RESUMO_REORGANIZACAO.md         ← Resumo da documentação
+│   ├── README_ESTRUTURA.md             ← Mapa de leitura
+│   ├── _MAPA_DE_LIMPEZA.md             ← Mapa da documentação
+│   ├── 00_SUMARIO_EXECUTIVO.md         ← Registro histórico
+│   └── roadmap.md                      ← Estado e etapas pendentes
 │
 ├── 📄 Dados e Configuração
 │   ├── iptu_2026.csv                   ← Dataset (210.53 MB)
@@ -125,42 +126,25 @@ TrabalhoFinal/
 │
 ├── 📁 scripts/
 │   ├── 01_exploracao_dados.py          ✅ Executado
-│   ├── 02_preparacao_dados.py          ⬜ Próximo
-│   ├── 03_amostragem.py                ⬜ Pronto
-│   ├── 04_analise_descritiva.py        ⬜ Pronto
-│   └── 05_inferencia_estatistica.py    ⬜ Pronto
+│   ├── 02_preparacao_dados.py          ✅ Executado
+│   ├── 03_amostragem.py                ✅ Executado
+│   ├── 04_analise_descritiva.py        ✅ Executado
+│   └── 05_inferencia_estatistica.py    ✅ Executado
 │
 ├── 📁 dados_processados/
-│   ├── 01_analise_ausencias.csv        ✅ Criado
-│   ├── 01_descritivas_populacao.csv    ✅ Criado
-│   ├── amostra_indices.csv             (será criado)
-│   ├── dados_limpos.csv                (será criado)
-│   └── resultados_descritivos.csv      (será criado)
+│   ├── dados_limpos.csv
+│   ├── amostra.csv
+│   ├── amostra_indices.csv
+│   └── dados_com_indicador_amostra.csv
 │
-├── 📁 paineis/
-│   ├── app_streamlit.py                ⬜ Pronto
-│   ├── config.yaml                     (será criado)
-│   └── assets/                         (será criado)
+├── 📁 saidas/ (9 CSVs, resultados do pipeline)
 │
-└── 📁 saidas/
-    ├── relatorio_inferencia.md         (será criado)
-    └── links_entrega.txt               (será criado)
+└── Painéis, vídeo e links de entrega     ⬜ Pendentes
 ```
 
----
-
-## 📈 Timeline (8 dias)
-
-| Data | Tarefa | Tempo | Status |
-|------|--------|-------|--------|
-| **07/11** | Preparação ambiente | 2h | ✅ |
-| **07-08/11** | Preparação dados | 1h | ⬜ |
-| **08/11** | Amostragem | 0.5h | ⬜ |
-| **08-09/11** | Descritivas | 1.5h | ⬜ |
-| **09/11** | Inferência | 1h | ⬜ |
-| **09-10/11** | Painéis | 2h | ⬜ |
-| **10-14/11** | Vídeo | 1.5h | ⬜ |
-| **15/11** | **ENTREGA** | — | ⬜ |
+**Estado dos arquivos:** atualizado após executar os scripts 02–05 em
+12/11/2026. A pasta `paineis/` não foi criada porque os painéis continuam
+pendentes.
 
 ---
 
@@ -216,7 +200,7 @@ python -c "import pandas, numpy, scipy, streamlit; print('✓ Tudo OK')"
         ↓
 05_inferencia_estatistica.py
         ↓
-paineis/app_streamlit.py
+Construir os três painéis interativos (pendente)
         ↓
 Gravação de vídeo
         ↓
@@ -229,7 +213,6 @@ python scripts/02_preparacao_dados.py
 python scripts/03_amostragem.py
 python scripts/04_analise_descritiva.py
 python scripts/05_inferencia_estatistica.py
-streamlit run paineis/app_streamlit.py
 ```
 
 ---
@@ -341,7 +324,7 @@ python scripts/02_preparacao_dados.py
 
 **Erro: Lentidão**
 - Normal com 876.248 linhas
-- Scripts usam chunks para eficiência
+- O script 02 carrega o CSV inteiro em memória; pode exigir alguns minutos e memória disponível.
 
 ---
 
@@ -349,7 +332,7 @@ python scripts/02_preparacao_dados.py
 
 ### Imediato (hoje)
 1. Ler este documento (5 min)
-2. Ler [GUIA_RAPIDO.md](./GUIA_RAPIDO.md) (5 min)
+2. Ler [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md) (10 min)
 3. Verificar ambiente Python (2 min)
 
 ### Curto Prazo (próximas 24h)
@@ -374,19 +357,18 @@ python scripts/02_preparacao_dados.py
 
 ---
 
-## 🎯 Conclusão
+## 🎯 Registro histórico
 
-✅ **O ambiente está completamente preparado e documentado.**
-
-Todos os scripts estão prontos para execução sequencial. A base de dados foi validada, o tamanho amostral foi calculado e as hipóteses foram definidas.
-
-**Comece pelo [GUIA_RAPIDO.md](./GUIA_RAPIDO.md) e execute `python scripts/02_preparacao_dados.py` em seguida.**
+Este documento registra a situação em 7 de novembro de 2026, antes da execução
+dos scripts 02–05. Não use a recomendação de execução nem os status abaixo como
+estado atual. Para a sequência vigente, comece por
+[00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md).
 
 ---
 
 **Preparado em:** 7 de novembro de 2026  
 **Tempo de preparação:** ~2 horas  
-**Status:** 🟢 PRONTO PARA EXECUÇÃO
+**Status naquele registro:** PRONTO PARA EXECUÇÃO
 
 ---
 

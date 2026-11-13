@@ -2,6 +2,11 @@
 
 **Informações estruturadas para agentes IA/LLM processarem**
 
+> Estado verificado dos arquivos locais em 12/11/2026. Para leitura humana,
+> comece por `00_LEIA_PRIMEIRO.md`; este arquivo não substitui o enunciado.
+> Os scripts 02–05 foram executados após os ajustes recentes; os CSVs locais
+> correspondem ao código atual.
+
 ---
 
 ## 🤖 INFORMAÇÕES DE PROJETO
@@ -12,7 +17,6 @@
     "nome": "Análise Estatística IPTU Porto Alegre 2026",
     "disciplina": "IA003 - Estatística",
     "universidade": "PUCRS",
-    "semestre": "2024/1",
     "tipo": "Trabalho Final",
     "objetivo": "Análise completa com amostragem e inferência estatística"
   }
@@ -29,7 +33,10 @@
 Nome:           iptu_2026.csv
 Caminho:        D:\Pós_IA\Disciplinas\IA003-estatistica\TrabalhoFinal\iptu_2026.csv
 Tamanho:        210 MB
-Linhas:         876.248 registros
+Registros:      876.248 (fonte original)
+Colunas:        32 (fonte original)
+População após limpeza: 876.243 registros (5 duplicatas removidas)
+Colunas após preparação: 34 (inclui 2 auxiliares)
 Codificação:    UTF-8
 Separador:      ; (ponto-e-vírgula)
 Decimal:        , (vírgula)
@@ -40,34 +47,34 @@ Falhas:         valores não numéricos viram NaN e são contabilizados no termi
 ### Variáveis
 
 ```
-Contínuas:
+Quantitativas usadas nas análises:
   - vlr_venal_imovel: valor fiscal do imóvel (R$)
   - mtr_area_construida_total: área construída (m²)
   - vlr_imposto: valor IPTU anual (R$)
   - vlr_aliquota: taxa do imposto (%)
 
-Categóricas:
-  - des_finalidade: uso principal (Residencial, Comercial, etc)
-  - des_uso: classificação detalhada (Apartamento, Casa, Loja, etc)
-  - nme_endloc_bairro_cdl: bairro (98 categorias)
-  - num_divisao_fiscal: zona fiscal (5 categorias)
+Categóricas usadas nas análises:
+  - des_finalidade: finalidade do imóvel
+  - des_uso: uso do imóvel
+  - nme_endloc_bairro_cdl: bairro
+  - num_divisao_fiscal: divisão fiscal (3 categorias observadas)
 
-Identificadores:
-  - num_sequencial_imovel: ID único do imóvel
-  - num_terreno: número do terreno
-  - num_quadra: número da quadra
+Colunas auxiliares criadas em 02:
+  - indice_original
+  - num_campos_vazios
 ```
 
 ### Qualidade de Dados
 
 ```
 Duplicatas:             5 (removidas em 02)
-Linhas vazias:          5 (removidas em 02)
+Linhas completamente vazias: 0
 Valores ausentes:
   - des_uso: 24.152 (2,75%)
   - mtr_area_construida_total: 24.057 (2,74%)
-Outliers:               Detectados mas mantidos (IQR method)
-Assimetria:             Presente (distribuição lognormal típica)
+  - vlr_venal_imovel: 43
+  - nme_endloc_bairro_cdl: 507
+Outliers:               Quantificados pelo IQR e mantidos; sem coluna indicadora
 ```
 
 ---
@@ -82,20 +89,21 @@ SCRIPT 01: Exploração (✓ já executado)
 SCRIPT 02: Preparação de Dados
     ├─ Input:  iptu_2026.csv (876.248)
     ├─ Ações:  Limpeza, tipagem, padronização
-    └─ Output: dados_processados/dados_limpos.csv (876.238)
+    └─ Output: dados_processados/dados_limpos.csv (876.243)
     ↓
 SCRIPT 03: Amostragem AAS
     ├─ Input:  dados_processados/dados_limpos.csv
     ├─ Ações:  Cálculo de n, sorteio com seed=42
-    └─ Output: dados_processados/amostra.csv (1.066)
+    └─ Outputs: amostra.csv (1.066), amostra_indices.csv (1.066),
+                dados_com_indicador_amostra.csv (876.243)
     ↓
 SCRIPT 04: Análise Descritiva
-    ├─ Inputs: dados_limpos.csv + amostra.csv
+    ├─ Input:  dados_com_indicador_amostra.csv
     ├─ Ações:  Estatísticas + frequências
     └─ Outputs: 8 arquivos CSV em saidas/
     ↓
 SCRIPT 05: Inferência Estatística
-    ├─ Inputs: dados_limpos.csv + amostra.csv
+    ├─ Input:  dados_com_indicador_amostra.csv
     ├─ Ações:  4 testes de hipóteses
     └─ Output: saidas/testes_hipoteses.csv
 ```
@@ -105,8 +113,8 @@ SCRIPT 05: Inferência Estatística
 ```
 02 precisa de:      iptu_2026.csv ✓
 03 precisa de:      02 (dados_limpos.csv)
-04 precisa de:      02 + 03 (dados_limpos.csv + amostra.csv)
-05 precisa de:      02 + 03 (dados_limpos.csv + amostra.csv)
+04 precisa de:      saída do 03 (dados_com_indicador_amostra.csv)
+05 precisa de:      saída do 03 (dados_com_indicador_amostra.csv)
 ```
 
 ---
@@ -117,11 +125,11 @@ SCRIPT 05: Inferência Estatística
 
 | Ação | Detalhes |
 |------|----------|
-| Limpeza | Remoção de duplicatas (5) e linhas vazias (5) |
-| Tipagem | Conversão para float64, int64 |
+| Limpeza | Remoção de 5 duplicatas exatas; 0 linhas totalmente vazias |
+| Tipagem | Converte as variáveis quantitativas da análise para float |
 | Consolidação | Padronização de categorias |
-| Detecção | Outliers com IQR |
-| Rastreabilidade | Coluna `processado_em_02` |
+| Detecção | Quantifica outliers com IQR e os mantém |
+| Rastreabilidade | `indice_original` e `num_campos_vazios` |
 
 ### Script 03 — Amostragem
 
@@ -132,19 +140,18 @@ Parâmetros:
   z = 1,96 (95% confiança)
   p = 0,50 (conservador)
   E = 0,03 (3% margem)
-  N = 876.238
+  N = 876.243
 
 Resultado: n ≈ 1.066 registros
-Taxa de amostragem: 0,12%
+Taxa de amostragem: 0,1217%
 Semente: 42 (reprodutibilidade)
 ```
 
 ### Script 04 — Análise Descritiva
 
-Para cada variável contínua:
-- count, mean, std, min, 25%, 50%, 75%, max
-- Variância, coeficiente variação
-- Skewness, kurtosis
+Para cada variável quantitativa:
+- Média, mediana, desvio-padrão, mínimo, Q1, Q3, máximo, amplitude e CV
+- Comparação entre população e amostra no mesmo CSV
 
 Para cada variável categórica:
 - Frequência absoluta
@@ -155,16 +162,16 @@ Para cada variável categórica:
 
 Teste H1 — Proporção de Apartamentos
 ```
-H₀: p = 0,50
-H₁: p ≠ 0,50
+H₀: p = 0,40
+H₁: p ≠ 0,40
 Método: Z-test
 α: 0,05
 ```
 
 Teste H2 — Proporção Residencial
 ```
-H₀: p = 0,70
-H₁: p ≠ 0,70
+H₀: p = 0,85
+H₁: p ≠ 0,85
 Método: Z-test
 α: 0,05
 ```
@@ -173,15 +180,15 @@ Teste H3 — Média Valor Venal
 ```
 H₀: μ = 400.000
 H₁: μ ≠ 400.000
-Método: t-test (gl = 1.065)
+Método: t-test (gl = n_amostra_h3 - 1)
 α: 0,05
 ```
 
 Teste H4 — Média Área Construída
 ```
-H₀: μ = 150
-H₁: μ ≠ 150
-Método: t-test (gl = 1.065)
+H₀: μ = 100
+H₁: μ ≠ 100
+Método: t-test (gl = n_amostra_h4 - 1)
 α: 0,05
 ```
 
@@ -195,11 +202,11 @@ TrabalhoFinal/
 ├── requirements.txt (dependências Python)
 │
 ├── scripts/
-│   ├── 01_exploracao_dados.py (✓ pronto)
-│   ├── 02_preparacao_dados.py (▶ executar)
-│   ├── 03_amostragem.py (▶ executar)
-│   ├── 04_analise_descritiva.py (▶ executar)
-│   └── 05_inferencia_estatistica.py (▶ executar)
+│   ├── 01_exploracao_dados.py (executado)
+│   ├── 02_preparacao_dados.py
+│   ├── 03_amostragem.py
+│   ├── 04_analise_descritiva.py
+│   └── 05_inferencia_estatistica.py
 │
 ├── dados_processados/ (SAÍDAS DOS SCRIPTS)
 │   ├── dados_limpos.csv (script 02)
@@ -208,22 +215,25 @@ TrabalhoFinal/
 │   └── dados_com_indicador_amostra.csv (script 03)
 │
 ├── saidas/ (RESULTADOS FINAIS)
-│   ├── desc_populacao.csv (script 04)
-│   ├── desc_amostra.csv (script 04)
-│   ├── freq_finalidade_pop.csv (script 04)
-│   ├── freq_finalidade_amostra.csv (script 04)
-│   ├── freq_uso_pop.csv (script 04)
-│   ├── freq_uso_amostra.csv (script 04)
-│   ├── freq_bairro_pop.csv (script 04)
-│   ├── freq_bairro_amostra.csv (script 04)
+│   ├── desc_vlr_venal_imovel.csv
+│   ├── desc_mtr_area_construida_total.csv
+│   ├── desc_vlr_imposto.csv
+│   ├── desc_vlr_aliquota.csv
+│   ├── freq_des_finalidade.csv
+│   ├── freq_des_uso.csv
+│   ├── freq_nme_endloc_bairro_cdl.csv
+│   ├── freq_num_divisao_fiscal.csv
 │   └── testes_hipoteses.csv (script 05)
 │
-└── docs/
-    ├── 00_LEIA_PRIMEIRO.md (entrada humana)
-    ├── 01_GUIA_PASSO_A_PASSO.md (execução humana)
-    ├── 02_REFERENCIA_TECNICA.md (detalhes técnicos)
-    └── 99_CONTEXT_PARA_AGENTES.md (este arquivo)
+├── 00_LEIA_PRIMEIRO.md (entrada humana)
+├── 01_GUIA_PASSO_A_PASSO.md (execução humana)
+├── 02_REFERENCIA_TECNICA.md (detalhes técnicos)
+└── 99_CONTEXT_PARA_AGENTES.md (este arquivo)
 ```
+
+Os artefatos atuais incluem 4 CSVs intermediários em `dados_processados/` e
+9 CSVs de resultado em `saidas/`. Os três painéis, o vídeo e os links acessíveis
+exigidos no enunciado ainda não estão no repositório.
 
 ---
 
@@ -267,45 +277,22 @@ ALPHA = 0.05
 ### Parâmetros Amostragem
 ```python
 CONFIANCA = 0.95        # z = 1.96
-MARGEM_ERRO = 0.03      # 3%
+MARGEM_ERRO = 0.03      # 3 pontos percentuais no dimensionamento de proporção
 PROPORCAO = 0.50        # conservadora
-POPULACAO = 876238      # N
-AMOSTRA_TAMANHO = 1066  # n (calculado)
+POPULACAO = 876243      # N após remover duplicatas
+AMOSTRA_TAMANHO = 1066  # n calculado e arredondado para cima
 ```
 
 ---
 
 ## 📊 SAÍDAS ESPERADAS
 
-### Formato Padrão
-- **Encoding:** UTF-8
-- **Separador:** `;` (ponto-e-vírgula)
-- **Decimal:** `,` (vírgula)
-- **Índice:** incluído (default pandas)
-
-### Exemplo — desc_populacao.csv
-
-```csv
-;vlr_venal_imovel;mtr_area_construida_total;vlr_imposto;vlr_aliquota
-count;876238.0;852181.0;876238.0;876238.0
-mean;387234.56;145.32;1243.21;0.32
-std;892156.43;95.21;2156.43;0.08
-min;50000.0;20.0;50.0;0.1
-25%;125000.0;80.0;400.0;0.25
-50%;158642.0;120.0;625.0;0.3
-75%;425000.0;180.0;1200.0;0.35
-max;45000000.0;5000.0;125000.0;1.5
-```
-
-### Exemplo — testes_hipoteses.csv
-
-```csv
-teste;h0;h1;parametro;estatistica;critico;p_valor;rejeita;ic_inf;ic_sup;conclusao
-H1;p=0.5;p≠0.5;0.545;2.95;1.96;0.0032;Sim;0.515;0.575;Rejeita H0
-H2;p=0.7;p≠0.7;0.682;1.87;1.96;0.0616;Não;0.653;0.711;Não rejeita H0
-H3;μ=400000;μ≠400000;387234;1.45;1.96;0.1472;Não;358000;416468;Não rejeita H0
-H4;μ=150;μ≠150;145.32;3.21;1.96;0.0013;Sim;142.5;148.1;Rejeita H0
-```
+### Formatos e nomes
+- Todos os arquivos são UTF-8.
+- Scripts 02 e 03: separador `;`; scripts 04 e 05: separador `,`.
+- Scripts 02–05 gravam sem índice.
+- Script 04: 4 `desc_<variável>.csv` e 4 `freq_<variável>.csv`, cada um comparando população e amostra.
+- Script 05: `testes_hipoteses.csv`, com colunas `Hipótese`, `Estatística`, `Valor-p` e `Decisão`.
 
 ---
 
@@ -348,7 +335,7 @@ python scripts/05_inferencia_estatistica.py
 
 ### Rastreabilidade
 
-- Cada script adiciona coluna `processado_em_XX` (rastreabilidade)
+- Script 02 adiciona `indice_original` e `num_campos_vazios`; script 03 adiciona `em_amostra`.
 - Mensagens verbose permitem acompanhar progresso
 - Relatórios de qualidade em console
 
@@ -373,10 +360,9 @@ python scripts/05_inferencia_estatistica.py
 
 ### Ao Entender os Resultados
 
-- **p-valor < 0,05:** resultado é estatisticamente significante
-- **p-valor ≥ 0,05:** resultado não é significante
-- **IC não contém H₀:** rejeita hipótese nula
-- **IC contém H₀:** não rejeita hipótese nula
+- **p-valor < 0,05:** rejeita H₀ ao nível de significância de 5%
+- **p-valor ≥ 0,05:** não rejeita H₀; isso não prova H₀
+- Para ICs bilaterais de 95% compatíveis com o teste, verifique se o valor hipotético está no intervalo; para proporções, o script usa teste Z e IC de Wald, que podem divergir.
 
 ### Ao Sugerir Melhorias
 
@@ -390,10 +376,11 @@ python scripts/05_inferencia_estatistica.py
 ## 🎯 QUESTÕES FREQUENTES PARA IA
 
 **P: Posso carregar dados usando pandas.read_csv()?**  
-R: Sim. Parâmetros essenciais:
+R: Sim. A fonte usa vírgula decimal e ponto-e-vírgula entre colunas:
 ```python
 pd.read_csv('iptu_2026.csv', sep=';', encoding='utf-8', decimal=',')
 ```
+O pipeline atual normaliza os decimais explicitamente no script 02.
 
 **P: Qual é a variável-alvo principal?**  
 R: Não há única variável-alvo. Análise multivariada de:
@@ -444,11 +431,11 @@ iptu_2026.csv
     ↓ [02]
 dados_limpos.csv
     ↓ [03]
-amostra.csv
-    ↓ [04] ← também usa dados_limpos.csv
-    ├→ desc_*.csv
-    └→ freq_*.csv
-    ↓ [05] ← também usa dados_limpos.csv
+dados_com_indicador_amostra.csv
+    ↓ [04]
+    ├→ desc_*.csv (comparação de população e amostra)
+    └→ freq_*.csv (comparação de população e amostra)
+    ↓ [05] ← também usa dados_com_indicador_amostra.csv
     ├→ testes_hipoteses.csv
 ```
 
@@ -483,8 +470,8 @@ Este projeto demonstra:
 ---
 
 **Versão:** 1.0  
-**Última atualização:** 2024  
+**Última atualização:** 12/11/2026
 **Público:** Agentes IA/LLM  
-**Status:** ✓ Estrutura completa
+**Status:** Pipeline analítico executado; painéis, vídeo e links pendentes
 
 Para humanos: Leia `00_LEIA_PRIMEIRO.md` ou `01_GUIA_PASSO_A_PASSO.md`

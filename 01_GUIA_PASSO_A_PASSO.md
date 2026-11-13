@@ -69,7 +69,7 @@ PREPARAÇÃO DE DADOS — IPTU 2026 Porto Alegre
 ================================================================================
 
 📂 Carregando dados de: D:\...\iptu_2026.csv
-✓ Sucesso! 876,248 linhas lidas
+✓ Sucesso! 876,248 registros lidos da base original
 
 [... muitas informações ...]
 
@@ -92,7 +92,7 @@ origem.
 
 ### Verificar resultado:
 - Procure por: `dados_processados/dados_limpos.csv`
-- Deve ter ~876.248 linhas
+- Deve conter 876.243 registros após a remoção de 5 duplicatas
 
 ---
 
@@ -112,7 +112,7 @@ AMOSTRAGEM — IPTU 2026 Porto Alegre
 ================================================================================
 
 📂 Carregando dados preparados...
-✓ Sucesso! 876,248 linhas lidas
+✓ Sucesso! 876,243 registros lidos
 
 RESULTADO: n ≈ 1.066 imóveis
 ✓ Amostra sorteada!
@@ -128,7 +128,7 @@ RESULTADO: n ≈ 1.066 imóveis
 
 ### Verificar resultado:
 - Procure por: `dados_processados/amostra.csv`
-- Deve ter ~1.066 linhas
+- Deve conter 1.066 registros (além do cabeçalho)
 
 ---
 
@@ -148,7 +148,7 @@ ANÁLISE DESCRITIVA — IPTU 2026 Porto Alegre
 ================================================================================
 
 📂 Carregando dados...
-✓ Sucesso! 876,248 linhas lidas
+✓ Sucesso! 876,243 registros lidos
 
 CALCULANDO ESTATÍSTICAS...
 ✓ vlr_venal_imovel
@@ -163,7 +163,7 @@ CALCULANDO FREQUÊNCIAS...
 ✓ num_divisao_fiscal
 
 💾 Arquivos salvos...
-✓ 8 arquivos CSV criados
+✓ 8 arquivos CSV descritivos criados
 
 🎉 ANÁLISE DESCRITIVA CONCLUÍDA COM SUCESSO!
 ================================================================================
@@ -173,7 +173,7 @@ CALCULANDO FREQUÊNCIAS...
 
 ### Verificar resultado:
 - Procure por pasta: `saidas/`
-- Deve ter 8 arquivos CSV
+- Deve ter 8 arquivos CSV descritivos
 
 ---
 
@@ -193,7 +193,7 @@ INFERÊNCIA ESTATÍSTICA — IPTU 2026 Porto Alegre
 ================================================================================
 
 📂 Carregando dados...
-✓ Sucesso! 876,248 linhas lidas
+✓ Sucesso! 876,243 registros lidos
 
 TESTANDO HIPÓTESES...
 ✓ H1: Proporção de Apartamentos
@@ -216,18 +216,23 @@ TESTANDO HIPÓTESES...
 
 ---
 
-## 🎉 Tudo Pronto!
+## 📌 Situação das Entregas
 
 ### Resumo da Execução
 
 ```
-Total de tempo: 10-15 minutos ✓
+Tempo estimado para executar os scripts 02–05: 10-15 minutos
 
-Arquivos criados:
+Arquivos do pipeline:
 ├── dados_processados/ (4 arquivos)
 └── saidas/ (9 arquivos)
 
-Total: 13 arquivos de resultado
+Total: 13 arquivos CSV: 4 intermediários e 9 resultados em saidas/.
+
+Os scripts 02–05 foram executados na ordem acima após os ajustes recentes e os
+CSVs estão atualizados. O enunciado também exige três painéis interativos, um
+vídeo de até 5 minutos e os links de entrega; esses itens não estão presentes
+neste repositório e permanecem pendentes.
 ```
 
 ---
@@ -340,6 +345,6 @@ Depois que terminar:
 
 ---
 
-**Status:** 🟢 Pronto para executar!
+**Status:** Pipeline analítico executado; painéis, vídeo e links finais pendentes.
 
 Dúvidas? Releia esta documentação ou procure no código (tudo está comentado em Português!)

@@ -4,8 +4,8 @@ AMOSTRAGEM — IPTU 2026 Porto Alegre
 Trabalho Final de Estatística IA003
 
 O QUE ESTE SCRIPT FAZ:
-  Este script seleciona uma amostra aleatória dos dados, em vez de usar todos
-  os 876.248 imóveis. Isso é útil porque:
+  Este script seleciona uma amostra aleatória da população preparada, em vez
+  de usar todos os registros nas análises inferenciais. Isso é útil porque:
   
   1. Simula um cenário real: normalmente não temos acesso a TODOS os dados
   2. Mais rápido: trabalhar com ~1.066 registros é mais fácil
@@ -72,12 +72,12 @@ print("\n" + "=" * 80)
 print("SEÇÃO 2: CÁLCULO DO TAMANHO DA AMOSTRA")
 print("=" * 80)
 
-print("""
+print(f"""
 PARÂMETROS DE AMOSTRAGEM:
   Nível de Confiança (1 - α): 95%      [z = 1,96]
   Margem de Erro (E):          3%       [0,03]
   Proporção (p):               50%      [0,50 - conservador]
-  População (N):               876.248 imóveis
+  População (N):               {len(df):,} registros processados
 
 FÓRMULA (com correção para população finita):
   
@@ -86,7 +86,7 @@ FÓRMULA (com correção para população finita):
   Onde:
     z = 1,96 (valor crítico para 95% de confiança)
     p = 0,50 (proporção esperada - caso conservador)
-    N = 876.248 (tamanho da população)
+    N = {len(df):,} (tamanho da população processada)
     E = 0,03 (margem de erro)
 """)
 

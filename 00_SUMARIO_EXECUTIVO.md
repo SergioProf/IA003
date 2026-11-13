@@ -1,8 +1,15 @@
 # SUMÁRIO EXECUTIVO — Preparação do Ambiente
 
-## ✅ Status: Ambiente Preparado com Sucesso
+> **Registro histórico da exploração inicial (07/11/2026).** As contagens de
+> ausências e estatísticas desta seção descrevem a fonte original, antes da
+> remoção das 5 duplicatas. O pipeline 02–05 foi executado desde então; consulte
+> [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md) e
+> [02_REFERENCIA_TECNICA.md](./02_REFERENCIA_TECNICA.md) para o estado atual.
+> Os três painéis e o vídeo exigidos no enunciado continuam pendentes.
 
-**Data:** 7 de novembro de 2026  
+## Status inicial: ambiente preparado
+
+**Data do registro:** 7 de novembro de 2026
 **Hora:** ~15:45 (Brasília)  
 **Prazo Final:** 15 de novembro de 2026 (8 dias úteis)
 
@@ -63,7 +70,8 @@
 
 ### ✅ População Definida
 
-- **N (Tamanho):** 876.248 unidades imobiliárias
+- **N da fonte original:** 876.248 registros
+- **N analítico após remover 5 duplicatas:** 876.243 registros
 - **Definição:** Todos os imóveis registrados no cadastro IPTU de Porto Alegre no exercício 2026
 - **Unidade Amostral:** Registro individual de imóvel
 
@@ -84,17 +92,18 @@ Porto Alegre, capital do Rio Grande do Sul, com população de ~1,4 milhão. O I
 - **Nível de confiança:** 95% (z = 1,96)
 - **Margem de erro:** 3 pontos percentuais
 - **Proporção (p):** 0,50 (conservador)
-- **Fator de correção:** População finita (N = 876.248)
+- **Fator de correção:** População finita (N analítico = 876.243)
 
 #### Fórmula Aplicada
 ```
-n = (z² × p × (1-p) / E²) ÷ [1 + (z² × p × (1-p)) / (E² × N)]
-n ≈ 1.066 registros
+n = [z² × p × (1-p) × N] / [E² × (N-1) + z² × p × (1-p)]
+N = 876.243
+n ≈ 1.065,81 → arredondado para cima: 1.066 registros
 ```
 
 ### ✅ Tamanho Amostral
 
-**n = 1.066 imóveis** (±0.12% do tamanho da população)
+**n = 1.066 registros** (aproximadamente 0,12% da população analítica)
 
 Essa amostra permite:
 - Estimar proporções com margem de erro de 3%
@@ -109,32 +118,40 @@ Essa amostra permite:
 
 ```
 TrabalhoFinal/
-├── 📄 ANALISE_INICIAL.md           ← Análise detalhada da tarefa
-├── 📄 AMBIENTE_TRABALHO.md         ← Guia de execução
-├── 📄 requirements.txt             ← Dependências Python
+├── 📄 00_LEIA_PRIMEIRO.md          ← Entrada para humanos
+├── 📄 01_GUIA_PASSO_A_PASSO.md     ← Execução
+├── 📄 02_REFERENCIA_TECNICA.md     ← Código e resultados
+├── 📄 99_CONTEXT_PARA_AGENTES.md   ← Contexto para agentes
 ├── 📄 Enunciado.txt                ← Tarefa original
-├── 📄 dicionario-de-dados.pdf      ← Dicionário das variáveis
-├── 📄 fonteDosDados.txt            ← Fonte dos dados (IPTU)
-├── 📄 roadmap.md                   ← Plano original
-├── 📊 iptu_2026.csv                ← Dataset (210.53 MB)
+├── 📄 fonteDosDados.txt            ← Fonte IPTU
+├── 📄 dicionario-de-dados.pdf      ← Dicionário
+├── 📄 requirements.txt             ← Dependências
+├── 📄 roadmap.md                   ← Estado e pendências
+├── 📊 iptu_2026.csv                ← Dataset original
 │
 ├── 📁 scripts/                     ← Scripts Python
-│   └── 01_exploracao_dados.py      ← ✅ EXECUTADO COM SUCESSO
+│   ├── 01_exploracao_dados.py
+│   ├── 02_preparacao_dados.py
+│   ├── 03_amostragem.py
+│   ├── 04_analise_descritiva.py
+│   └── 05_inferencia_estatistica.py
 │
-├── 📁 dados_processados/           ← Outputs intermediários
-├── 📁 paineis/                     ← Dashboards Streamlit
-└── 📁 saidas/                      ← Resultados finais
+├── 📁 dados_processados/           ← 4 CSVs intermediários
+└── 📁 saidas/                      ← 9 CSVs de resultados
 ```
 
-### ✅ Scripts Preparados
+### Scripts e artefatos no estado atual
 
 | # | Script | Status | Função |
 |----|--------|--------|--------|
-| 1 | `01_exploracao_dados.py` | ✅ Criado + Executado | Validação inicial dos dados |
-| 2 | `02_preparacao_dados.py` | ⬜ Pronto para criação | Limpeza e tratamento de valores |
-| 3 | `03_amostragem.py` | ⬜ Pronto para criação | Seleção AAS com semente fixa |
-| 4 | `04_analise_descritiva.py` | ⬜ Pronto para criação | Estatísticas pop. e amostra |
-| 5 | `05_inferencia_estatistica.py` | ⬜ Pronto para criação | Intervalos e testes |
+| 1 | `01_exploracao_dados.py` | ✅ Executado | Validação inicial da fonte |
+| 2 | `02_preparacao_dados.py` | ✅ Executado | Limpeza e tratamento |
+| 3 | `03_amostragem.py` | ✅ Executado | Seleção AAS, semente 42 |
+| 4 | `04_analise_descritiva.py` | ✅ Executado | Comparação descritiva |
+| 5 | `05_inferencia_estatistica.py` | ✅ Executado | Intervalos e testes |
+
+O status dos artefatos é baseado nos arquivos presentes no repositório, não
+substitui uma nova execução após alterações futuras nos scripts.
 
 ### ✅ Dependências Python
 
@@ -148,44 +165,44 @@ Preparado arquivo `requirements.txt` com:
 
 ## 5. Próximas Etapas
 
-### Sequência de Execução Recomendada
+### Sequência de execução e entrega
 
 ```
 Etapa A: Exploração ✅ [CONCLUÍDO]
   └─> 01_exploracao_dados.py
 
-Etapa B: Preparação ⬜ [PRÓXIMO]
+Etapa B: Preparação ✅ [EXECUTADA]
   └─> 02_preparacao_dados.py
       - Validar e converter tipos
       - Tratar valores monetários
       - Confirmar valores faltantes
 
-Etapa C: Amostragem ⬜
+Etapa C: Amostragem ✅ [EXECUTADA]
   └─> 03_amostragem.py
       - Gerar AAS (n ≈ 1.066)
       - Salvar índices
       - Documentar semente
 
-Etapa D: Descritivas ⬜
+Etapa D: Descritivas ✅ [EXECUTADA]
   └─> 04_analise_descritiva.py
       - Estatísticas população
       - Gráficos exploratórios
       - Repetir com amostra
 
-Etapa E: Inferência ⬜
+Etapa E: Inferência ✅ [EXECUTADA]
   └─> 05_inferencia_estatistica.py
       - Intervalos de confiança (proporção)
       - Intervalos de confiança (média)
       - Testes de hipóteses
       - Comparar com população
 
-Etapa F: Painéis ⬜
-  └─> paineis/app_streamlit.py
+Etapa F: Painéis ⬜ [PENDENTE]
+  └─> Implementar os 3 painéis interativos exigidos no enunciado
       - Painel 1: População
       - Painel 2: Amostra
       - Painel 3: Inferência + Comparação
 
-Etapa G: Vídeo ⬜
+Etapa G: Vídeo e links ⬜ [PENDENTE]
   └─> Gravação e edição
       - YouTube (max 5 min)
       - Links públicos
@@ -208,9 +225,13 @@ Etapa G: Vídeo ⬜
 
 ---
 
-## 6. Hipóteses Estatísticas Confirmadas
+## 6. Hipóteses codificadas no script 05
 
-### ✅ Hipótese 1: Proporção — Finalidade "Apartamento"
+Os valores abaixo correspondem à implementação atual e ainda precisam de
+justificativa substantiva na apresentação final; não representam aprovação
+externa das hipóteses.
+
+### Hipótese 1: Proporção — Finalidade "Apartamento"
 
 - **Variável:** `des_finalidade`
 - **Evento:** Apartamento
@@ -218,25 +239,25 @@ Etapa G: Vídeo ⬜
 - **H₁:** p ≠ 0,40 (bilateral)
 - **α:** 0,05
 
-### ✅ Hipótese 2: Proporção — Uso Residencial
+### Hipótese 2: Proporção — Uso Residencial
 
-- **Variável:** `des_uso` (válidos: 852.096)
+- **Variável:** `des_uso` (válidos: 852.091 após remover duplicatas)
 - **Evento:** Residencial
 - **H₀:** p = 0,85
 - **H₁:** p ≠ 0,85 (bilateral)
 - **α:** 0,05
 
-### ✅ Hipótese 3: Média — Valor Venal do Imóvel
+### Hipótese 3: Média — Valor Venal do Imóvel
 
-- **Variável:** `vlr_venal_imovel` (válidos: 876.205)
+- **Variável:** `vlr_venal_imovel` (válidos: 876.200 após remover duplicatas)
 - **H₀:** μ = R$ 400.000
 - **H₁:** μ ≠ R$ 400.000 (bilateral)
 - **α:** 0,05
 - **Nota:** Distribuição assimétrica; validar pressupostos
 
-### ✅ Hipótese 4: Média — Área Construída
+### Hipótese 4: Média — Área Construída
 
-- **Variável:** `mtr_area_construida_total` (válidos: 852.191)
+- **Variável:** `mtr_area_construida_total` (válidos: 852.186 após remover duplicatas)
 - **H₀:** μ = 100 m²
 - **H₁:** μ ≠ 100 m² (bilateral)
 - **α:** 0,05
@@ -247,45 +268,46 @@ Etapa G: Vídeo ⬜
 ## 7. Checklist de Validação ✅
 
 ### Dados
-- [x] Dataset carregado (876.248 registros)
+- [x] Dataset carregado (876.248 registros originais)
+- [x] População analítica definida (876.243 após remoção de 5 duplicatas)
 - [x] Separador e encoding validados
 - [x] Ausências documentadas
 - [x] Duplicatas identificadas (5 linhas)
 - [x] Tipos de dados confirmados
 
 ### Amostragem
-- [x] Tamanho calculado (n ≈ 1.066)
-- [ ] Semente de aleatoriedade fixada
-- [ ] Índices salvos
-- [ ] Método AAS documentado
+- [x] Tamanho calculado (n = 1.066)
+- [x] Semente de aleatoriedade fixada (42)
+- [x] Índices salvos
+- [x] Método AAS documentado
 
 ### Análise
-- [ ] Descritivas população
-- [ ] Descritivas amostra
-- [ ] Intervalos de confiança
-- [ ] Testes de hipóteses
-- [ ] Comparação pop. vs. amostra
+- [x] Descritivas população e amostra
+- [x] Intervalos de confiança e testes de hipóteses implementados
+- [x] Comparação população vs. amostra
 
 ### Painéis
 - [ ] Painel 1 (População)
 - [ ] Painel 2 (Amostra)
 - [ ] Painel 3 (Inferência)
-- [ ] Links públicos
+- [ ] Links acessíveis
 
 ### Vídeo
 - [ ] Roteiro escrito
 - [ ] Gravado
-- [ ] Publicado YouTube
+- [ ] Link publicado e acessível
 
 ---
 
 ## 8. Recursos e Documentação
 
-### Arquivos Locais
-- ✅ [ANALISE_INICIAL.md](./ANALISE_INICIAL.md) — Análise detalhada
-- ✅ [AMBIENTE_TRABALHO.md](./AMBIENTE_TRABALHO.md) — Guia de execução
-- ✅ [Enunciado.txt](./Enunciado.txt) — Tarefa completa
-- 📊 [dicionario-de-dados.pdf](./dicionario-de-dados.pdf) — Descrição das variáveis
+### Arquivos atuais
+- [00_LEIA_PRIMEIRO.md](./00_LEIA_PRIMEIRO.md) — status e visão geral
+- [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md) — execução
+- [02_REFERENCIA_TECNICA.md](./02_REFERENCIA_TECNICA.md) — detalhes do pipeline
+- [99_CONTEXT_PARA_AGENTES.md](./99_CONTEXT_PARA_AGENTES.md) — contexto para IA
+- [Enunciado.txt](./Enunciado.txt) — tarefa completa
+- [dicionario-de-dados.pdf](./dicionario-de-dados.pdf) — descrição das variáveis
 
 ### Referências Externas
 - [IPTU — Dados Abertos Porto Alegre](https://dadosabertos.poa.br/dataset/iptu)
@@ -297,25 +319,17 @@ Etapa G: Vídeo ⬜
 
 ## 9. Instruções para Próxima Sessão
 
-### Para Continuar o Trabalho
+### Antes da entrega
 
-1. **Instalar dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Próximo script a executar:**
-   ```bash
-   python scripts/02_preparacao_dados.py
-   ```
-
-3. **Verificar saídas geradas:**
-   - `01_analise_ausencias.csv` (salvo pela exploração)
-   - `01_descritivas_populacao.csv` (salvo pela exploração)
+1. Reexecutar os scripts 02–05 na ordem indicada em
+   [01_GUIA_PASSO_A_PASSO.md](./01_GUIA_PASSO_A_PASSO.md), para regenerar os
+   CSVs com o código atual.
+2. Construir e testar os três painéis interativos exigidos.
+3. Gravar o vídeo de até cinco minutos e disponibilizar os links de entrega.
 
 ### Pontos de Atenção
 
-- ⚠️ **Decimais:** O arquivo usa vírgula (`,`) como separador — converter ao ler
+- ⚠️ **Decimais:** o CSV usa ponto-e-vírgula entre colunas e vírgula decimal
 - ⚠️ **Distribuição:** Valor venal é altamente assimétrico — examinar distribuição
 - ⚠️ **Ausências:** `des_uso` (2.76%) e `mtr_area_construida_total` (2.75%) afetam tamanho válido
 - ⚠️ **Independência:** Múltiplas unidades podem estar no mesmo lote — documentar
@@ -324,11 +338,9 @@ Etapa G: Vídeo ⬜
 
 ## 10. Conclusão
 
-✅ **O ambiente foi preparado com sucesso!**
-
-A base de dados foi validada, o projeto estruturado e os scripts iniciais criados. O tamanho amostral foi calculado (n ≈ 1.066) e as hipóteses estatísticas foram definidas.
-
-**Próxima ação:** Executar `02_preparacao_dados.py` para limpar e validar os dados.
+Os scripts de preparação, amostragem, análise descritiva e inferência estão
+implementados, e os CSVs foram regenerados após os ajustes nos scripts 02–03.
+Painéis, vídeo e links continuam pendentes.
 
 ---
 
@@ -336,4 +348,4 @@ A base de dados foi validada, o projeto estruturado e os scripts iniciais criado
 **Data:** 7 de novembro de 2026  
 **Tempo total de preparação:** ~2 horas
 
-🎯 **Status:** PRONTO PARA EXECUÇÃO
+🎯 **Status:** Scripts implementados; reexecução dos scripts 02–05 necessária

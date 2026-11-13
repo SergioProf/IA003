@@ -6,7 +6,7 @@ Trabalho Final de Estatística IA003
 O QUE ESTE SCRIPT FAZ:
   Este script calcula estatísticas descritivas (números resumidos) para:
   
-  1. POPULAÇÃO COMPLETA (876.248 imóveis)
+  1. POPULAÇÃO ANALÍTICA (876.243 registros após remover duplicatas)
      - Estatísticas gerais de todas as variáveis
   
   2. AMOSTRA (1.066 imóveis sorteados)
