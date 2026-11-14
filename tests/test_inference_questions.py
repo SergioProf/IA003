@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from streamlit.testing.v1 import AppTest
@@ -25,6 +26,17 @@ def inference_panel():
 
 
 class InferenceQuestionsTests(unittest.TestCase):
+    def test_summary_columns_have_descriptive_tooltips(self):
+        panel = AppTest.from_function(inference_panel, default_timeout=20).run()
+        self.assertFalse(panel.exception)
+        table = panel.dataframe[0]
+        config = json.loads(table.proto.columns)
+        for column in table.value.columns:
+            with self.subTest(column=column):
+                self.assertTrue(config[column]["help"])
+        self.assertIn("H₀", config["Valor-p"]["help"])
+        self.assertIn("0,05", config["Decisão (α = 5%)"]["help"])
+
     def test_questions_appear_before_the_corresponding_tests(self):
         panel = AppTest.from_function(inference_panel, default_timeout=20).run()
         self.assertFalse(panel.exception)

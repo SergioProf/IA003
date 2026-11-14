@@ -493,6 +493,41 @@ def render_inference_panel(population, sample):
         pd.DataFrame(table_rows),
         hide_index=True,
         use_container_width=True,
+        column_config={
+            "Hipótese": st.column_config.TextColumn(
+                help="Parâmetro investigado. Os detalhes abaixo mostram H₀ e H₁."
+            ),
+            "Parâmetro populacional": st.column_config.TextColumn(
+                help="Proporção ou média calculada com os dados válidos da população."
+            ),
+            "Estimativa amostral": st.column_config.TextColumn(
+                help="Proporção ou média calculada com os dados válidos da amostra."
+            ),
+            "IC 95% da amostra": st.column_config.TextColumn(
+                help=(
+                    "Intervalo de confiança de 95% para o parâmetro populacional, "
+                    "estimado a partir da amostra."
+                )
+            ),
+            "Estatística": st.column_config.TextColumn(
+                help=(
+                    "Estatística Z ou t: diferença entre a estimativa amostral "
+                    "e o valor de H₀, dividida pelo erro-padrão do teste."
+                )
+            ),
+            "Valor-p": st.column_config.TextColumn(
+                help=(
+                    "Se H₀ for verdadeira, probabilidade de obter uma estatística "
+                    "tão extrema quanto a observada, ou mais extrema."
+                )
+            ),
+            "Decisão (α = 5%)": st.column_config.TextColumn(
+                help=(
+                    "Rejeita H₀ quando o valor-p é menor que 0,05; caso contrário, "
+                    "não rejeita H₀, o que não prova que ela seja verdadeira."
+                )
+            ),
+        },
     )
 
     for question, result in results:
